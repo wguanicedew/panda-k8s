@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress-ssl-passthrough
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  defaultBackend:
+    service:
+      name: aviator
+      port:
+        number: 8080
+  tls:
+  - hosts:
+      -  iddsk8s.cern.ch
+  rules:
+  - host: iddsk8s.cern.ch
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: aviator
+            port:
+              number: 8080

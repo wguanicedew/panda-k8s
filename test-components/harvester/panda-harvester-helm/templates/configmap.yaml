@@ -1,0 +1,20 @@
+# instance configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-panda-harvester-configmap
+data:
+  panda_harvester_configmap.json: |-
+{{ .Files.Get "panda_harvester_configmap.json" | indent 4}}
+
+---
+
+# queue config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-panda-harvester-queue_config
+data:
+  panda_queueconfig.json: |-
+{{ .Files.Get "panda_queueconfig.json" | indent 4}}
+

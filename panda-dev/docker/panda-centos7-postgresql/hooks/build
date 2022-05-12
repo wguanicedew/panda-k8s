@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# docker build --build-arg TAG=$SOURCE_BRANCH -f $DOCKERFILE_PATH --network host --no-cache -t $IMAGE_NAME:$SOURCE_BRANCH .
+# docker build  -f Dockerfile --network host --no-cache --tag wguanicedew/panda-centos7-postgresql:0.1.0 .
+# docker images
+# docker login --username=wguanicedew
+# docker push wguanicedew/panda-postgres:13.6
+#
+# kubectl exec -it panda-postgres-59d6f7655c-sqp6z --  psql -h localhost -U admin --password -p 5432 postgresdb

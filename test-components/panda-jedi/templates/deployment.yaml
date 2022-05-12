@@ -1,0 +1,116 @@
+# pv
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "panda-jedi.fullname" . }}
+  labels:
+      {{- include "panda-jedi.labels" . | nindent 4 }}
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.persistentvolume.size }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.persistentvolume.path }}
+---
+# pv claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "panda-jedi.fullname" . }}
+  labels:
+    {{- include "panda-jedi.labels" . | nindent 4 }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistentvolume.size }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "panda-jedi.fullname" . }}
+  labels:
+    {{- include "panda-jedi.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "panda-jedi.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "panda-jedi.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "panda-jedi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 25080
+              protocol: TCP
+            - name: https
+              containerPort: 25443
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+              - name: {{ include "panda-jedi.fullname" . }}-logs
+                mountPath: /var/log/panda-jedi/
+              - name: {{ include "panda-jedi.fullname" . }}-configmap
+                mountPath: /opt/panda-jedi/config
+              {{- if .Values.hostcerts.enabled -}}
+              - name: {{ include "panda-jedi.fullname" . }}-certs
+                mountPath: /opt/panda-jedi/cert
+              {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: {{ include "panda-jedi.fullname" . }}-logs
+          persistentVolumeClaim:
+            claimName: {{ include "panda-jedi.fullname" . }}
+        - name: {{ include "panda-jedi.fullname" . }}-configmap
+          configMap:
+              name: {{ include "panda-jedi.fullname" . }}-configmap
+        {{- if .Values.hostcerts.enabled -}}
+        - name: {{ include "panda-jedi.fullname" . }}-certs
+          configMap:
+              name: {{ include "panda-jedi.fullname" . }}-certs
+        {{- end }}

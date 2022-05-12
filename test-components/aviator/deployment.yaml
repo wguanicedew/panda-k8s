@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aviator
+  labels:
+    app: aviator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aviator
+  template:
+    metadata:
+      labels:
+        app: aviator
+    spec:
+      containers:
+        - name: aviator
+          image: registry.cern.ch/cloud/aviator:small
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aviator
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 80
+  - name: https
+    protocol: TCP
+    port: 8443
+    targetPort: 443
+  selector:
+    app: aviator
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: aviator
+#   annotations:
+#     loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
+#     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+#     loadbalancer.openstack.org/cascade-delete: "false"
+# spec:
+#   type: NodePort
+#   ports:
+#     - port: 80
+#       targetPort: 80
+#       protocol: TCP
+#       name: aviator
+#   selector:
+#     app: aviator
+#   type: LoadBalancer
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: aviator
+# spec:
+#   rules:
+#     - host: "*.cern.ch"
+#       http:
+#         paths:
+#           - path: /aviator
+#             backend:
+#               serviceName: aviator
+#               servicePort: 80
+

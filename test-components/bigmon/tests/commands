@@ -1,0 +1,14 @@
+awk '{print $1}' ai-idds-03-piplist |sed 's/\n/ /g'|tr '\n' ' '
+
+yum install postgresql postgresql-contrib postgresql-static postgresql-libs postgresql-devel
+# yum install cx_Oracle
+
+/opt/panda/bin/pip install --no-cache-dir --upgrade django.js futures psycopg2
+
+/opt/panda/bin/pip install --no-cache-dir --upgrade pip
+/opt/panda/bin/pip install --no-cache-dir --upgrade setuptools
+
+/opt/panda/bin/pip install --no-cache-dir --upgrade psycopg2-binary
+
+/opt/panda/bin/pip install --no-cache-dir --upgrade aenum appdirs argcomplete asn1crypto attrs aws bcrypt beautifulsoup4 boto bz2file cachetools certifi cffi chardet click codegen cryptography cx-Oracle cycler dataclasses datefinder decorator defusedxml Django django-bower django-cors-headers django-datatables-view django-debug-toolbar django-extensions django-htmlmin django.js django-mathfilters django-redis django-redis-cache django-render-block django-tables2 django-templated-email djangorestframework docopt dogpile.cache ecdsa elasticsearch elasticsearch-dsl enum34 fabric findspark flake8 Flask futures google-auth html5lib httplib2 humanize idds-client idds-common idds-workflow idna importlib-metadata iniconfig invoke ipaddress itsdangerous Jinja2 joblib kiwisolver kubernetes linecache2 lxml MarkupSafe matplotlib mccabe mod-wsgi nose numpy oauthlib olefile openshift packaging pandas paramiko patterns pep8 Pillow pip pluggy prettytable progressbar2 psutil psycopg2 py pyasn1 pyasn1-modules pycodestyle pycparser pycrypto pyflakes PyJWT PyNaCl pyparsing pytest python-dateutil python-magic python-openid python-social-auth python-string-utils python-utils python3-openid pytz PyYAML redis regex reportlab requests requests-oauthlib rsa ruamel.yaml ruamel.yaml.clib rucio-clients schedule scikit-learn scipy setuptools six sklearn social-auth-app-django social-auth-core soupsieve sqlparse stomp.py subprocess32 sunburnt tabulate threadpoolctl tiny-xslt toml traceback2 typing-extensions unittest2 urllib3 webencodings websocket-client Werkzeug xlrd zipp
+

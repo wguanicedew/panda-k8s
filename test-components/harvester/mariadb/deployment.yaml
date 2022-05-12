@@ -1,0 +1,96 @@
+# pv
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: mariadb-pv-volume
+  labels:
+    type: local
+    app: mariadb
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/mariadb_data"
+---
+# pv claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mariadb-pv-claim
+  labels:
+    app: mariadb
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+# config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-config
+  labels:
+    app: mariadb
+data:
+  MARIADB_DATABASE: harvesterdb
+  MARIADB_USER: admin
+  MARIADB_PASSWORD: test123
+  MARIADB_ROOT_PASSWORD: test123
+---
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb-deployment
+  labels:
+    app: mariadb
+    type: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+      type: database
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        type: database
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 3306
+              name: db-port
+          envFrom:
+            - configMapRef:
+                name: mariadb-config
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mariadb
+      volumes:
+        - name: mariadb
+          persistentVolumeClaim:
+            claimName: mariadb-pv-claim
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  type: ClusterIP     # NodePort
+  ports:
+   - port: 3306
+  selector:
+   app: mariadb

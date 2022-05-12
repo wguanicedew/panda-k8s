@@ -1,0 +1,6 @@
+helm install mariadb-harvester --set auth.rootPassword=harvesterpass,auth.database=harvester_db,auth.username=harvester,auth.password=harvesterpass bitnami/mariadb
+helm delete mariadb-harvester
+helm uninstall mariadb-harvester
+
+kubectl get secret --namespace default mariadb-harvester -o jsonpath="{.data.mariadb-root-password}" | base64 --decode
+

@@ -1,0 +1,7 @@
+
+configMapGenerator:
+  - name: idds-config
+    files:
+    - idds_configmap.json
+    - ca.crt
+    - gacl

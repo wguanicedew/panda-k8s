@@ -1,0 +1,15 @@
+{
+    "db": {
+        "backend": "postgres", 
+        "dbhost": "10.254.202.231",
+        "dbname": "panda_db",
+        "dbpasswd": "panda_test123",
+        "dbport": 5432,
+        "dbuser": "panda",
+        "schemaDEFT": "DOMA_DEFT", 
+        "schemaJEDI": "DOMA_PANDA", 
+        "schemaMETA": "DOMA_PANDAMETA", 
+        "schemaPANDA": "DOMA_PANDA", 
+        "schemaPANDAARCH": "DOMA_PANDAARCH"
+    }
+}

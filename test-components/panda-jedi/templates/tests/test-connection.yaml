@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "panda-jedi.fullname" . }}-test-connection"
+  labels:
+    {{- include "panda-jedi.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "panda-jedi.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

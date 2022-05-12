@@ -1,0 +1,20 @@
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-panda-harvester-service
+  labels:
+    app: panda-harvester
+spec:
+  type: ClusterIP     # NodePort
+  ports:
+   - name: panda-harvester-http
+     protocol: TCP
+     port: 25080
+     targetPort: 25080
+   - name: panda-hsrvester-https
+     protocol: TCP
+     port: 25443
+     targetPort: 25443
+  selector:
+   app: panda-harvester

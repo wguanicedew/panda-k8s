@@ -1,0 +1,90 @@
+# pv
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: panda-postgres-pv-volume
+  labels:
+    type: local
+    app: panda-postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/panda-data"
+---
+# pv claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: panda-postgres-pv-claim
+  labels:
+    app: panda-postgres
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+# config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: panda-postgres-config
+  labels:
+    app: panda-postgres
+data:
+  POSTGRES_DB: postgresdb
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: test123
+  PANDA_PASSWORD: panda_test123
+---
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panda-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: panda-postgres
+  template:
+    metadata:
+      labels:
+        app: panda-postgres
+    spec:
+      containers:
+        - name: panda-postgres
+          image: wguanicedew/panda-centos7-postgres:13.6.8
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: panda-postgres-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: panda-postgredb
+      volumes:
+        - name: panda-postgredb
+          persistentVolumeClaim:
+            claimName: panda-postgres-pv-claim
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: panda-postgres
+  labels:
+    app: panda-postgres
+spec:
+  type: ClusterIP     # NodePort
+  ports:
+   - port: 5432
+  selector:
+   app: panda-postgres

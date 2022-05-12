@@ -1,0 +1,99 @@
+# pv
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: idds-pv-volume
+  labels:
+    type: local
+    app: idds
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"
+---
+# pv claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: idds-pv-claim
+  labels:
+    app: idds
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+# config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: idds-config
+  labels:
+    app: idds
+data:
+  POSTGRES_DB: postgresdb
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: test123
+---
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idds
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: idds
+  template:
+    metadata:
+      labels:
+        app: idds
+    spec:
+      containers:
+        - name: idds
+          image: wguanicedew/idds:0.10.18
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 8443
+          envFrom:
+            - configMapRef:
+                name: idds-config
+          volumeMounts:
+            - mountPath: /var/log/idds
+              name: iddslogs
+            - mountPath: /opt/idds/config/
+              name: idds-configmap
+            - mountPaht: /opt/idds/config
+              name: rucio-crt
+      volumes:
+        - name: iddslogs
+          persistentVolumeClaim:
+            claimName: idds-pv-claim
+        - name: idds-configmap
+          configMap:
+              name: idds-configmap-bg28btdhk9
+        - name: rucio-crt
+          configMap:
+              name: rucio-crt-fc7c7tmbc5
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: idds
+  labels:
+    app: idds
+spec:
+  type: ClusterIP     # NodePort
+  ports:
+   - port: 8443
+  selector:
+   app: idds
