@@ -1,0 +1,51 @@
+# harvester configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "main.fullname" . }}-configmap
+data:
+  panda_harvester_configmap.json: |-
+    {
+        "db": {
+            "database_filename": "/data/harvester/harvester.db", 
+            "verbose": true,
+            "engine": "{{.Values.database.db_backend}}",
+            "host": "{{.Release.Name}}-mariadb",
+            "schema": "{{.Values.database.db_name}}",
+            "passwd": "{{.Values.database.db_password}}",
+            "port": 3306,
+            "user": "{{.Values.database.db_user}}"
+        }, 
+        "master": {
+            "gname": "zp", 
+            "harvester_id": "{{ include "main.fullname" . }}",
+            "uname": "atlpan"
+        }, 
+        "pandacon": {
+            "ca_cert": null,
+            "auth_type": "oidc",
+            "auth_token": "FIXME",
+            "auth_origin": "FIXME",
+            "pandaURL": "http://pandaserver-doma.cern.ch:25080/server/panda",
+            "pandaURLSSL": "https://pandaserver-doma.cern.ch/server/panda", 
+            "verbose": true
+        }, 
+        "qconf": {
+            "queueList": [
+                "ALL"
+            ]
+        }
+    }
+---
+
+# queue config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "main.fullname" . }}-queueconfig
+data:
+  panda_queueconfig.json: |-
+{{ .Files.Get "panda_queueconfig.json" | indent 4}}
+
+  pilot_wrapper.sh: |-
+{{ .Files.Get "pilot_wrapper.sh" | indent 4}}

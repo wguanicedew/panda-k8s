@@ -1,118 +1,119 @@
-# Default values for idds.
+# Default values for panda.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+# panda_db, panda_user and panda_schema should not be changed currently
+database:
+  panda_db: &panda_db "panda_db"
+  panda_user: &panda_user "panda"
+  panda_password: &panda_password "MyPass123"
+  panda_schema: &panda_schema "doma_panda"
 
-image:
-  repository: wguanicedew/idds
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.10.18"
+jedi:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: ghcr.io/pandawms/panda-jedi
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+  autoStart: true
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+  persistentvolume:
+    path: "/mnt/panda-jedi-logs"
+    size: 5Gi
+  hostcerts:
+    enabled: false
+  database:
+    panda_db: *panda_db
+    panda_user: *panda_user
+    panda_password: *panda_password
+    panda_schema: *panda_schema
+  service:
+    type: ClusterIP
+    httpPort: 25080
+    httpsPort: 25443
+  ingress:
+    enabled: true
+    hosts:
+      - domain: cern.ch
+        # hostOverride: panda-k8s-dev-jedi.cern.ch
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: ""
+        hosts:
+          - domain: cern.ch
+            # hostOverride: panda-k8s-dev-jedi.cern.ch
+server:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: ghcr.io/pandawms/panda-server
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+  autoStart: true
 
-persistentvolume:
-  path: "/mnt/idds-data-logs"
-  size: 5Gi
-hostcerts:
-  enabled: false
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 8443
-
-ingress:
-  enabled: false
-  className: ""
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: idds-k8s-dev.cern.ch
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - hosts:
-        - idds-k8s-dev.cern.ch
-  # tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-# For subchart postgres
+  persistentvolume:
+    path: "/mnt/panda-server-logs"
+    size: 5Gi
+  hostcerts:
+    enabled: false
+  database:
+    panda_db: *panda_db
+    panda_user: *panda_user
+    panda_password: *panda_password
+    panda_schema: *panda_schema
+  service:
+    type: ClusterIP
+    httpPort: 25080
+    httpsPort: 25443
+  ingress:
+    enabled: true
+    hosts:
+      - domain: cern.ch
+        # hostOverride: panda-k8s-dev-server.cern.ch
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: ""
+        hosts:
+          - domain: cern.ch
+            # hostOverride: panda-k8s-dev-server.cern.ch
 postgres:
   # nameOverride: {{ .Release.Name }}-postgres
   # fullnameOverride: {{ .Release.Name }}-postgres
   enabled: true
   persistentvolume:
-    path: "/mnt/idds-data"
+    path: "/mnt/panda-database"
     size: 5Gi
+  image:
+    repository: wguanicedew/panda-centos7-postgresql
+    pullPolicy: IfNotPresent
+    tag: "0.1.0"
+
   database:
-    name: doma-idds
-    user: doma-idds
-    password: MyDomaPass0508
-    schema: doma_idds
+    name: postgresdb
+    user: admin
+    password: MyPandaPass0508
+    schema: default
+    panda_db: *panda_db
+    panda_user: *panda_user
+    panda_password: *panda_password
+    panda_schema: *panda_schema
   ingress:
-    enabled: false
+    enabled: true
     hosts:
-      - host: idds-k8s-dev-postgres.cern.ch
+      - domain: cern.ch
+        # hostOverride: panda-k8s-dev-postgres.cern.ch
         paths:
           - path: /
             pathType: Prefix
-    tls: []
-      - hosts:
-          - idds-k8s-dev-postgres.cern.ch
+    tls:
+      - secretName: ""
+        hosts:
+          - domain: cern.ch
+            # hostOverride: panda-k8s-dev-postgres.cern.ch

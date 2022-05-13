@@ -1,0 +1,12 @@
+# config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mariadb.fullname" . }}-configmap
+  labels:
+    {{- include "mariadb.labels" . | nindent 4 }}
+data:
+  MARIADB_DATABASE: {{ .Values.database.name }}
+  MARIADB_USER: {{ .Values.database.user }}
+  MARIADB_PASSWORD: {{ .Values.database.password }}
+  MARIADB_ROOT_PASSWORD: {{ .Values.database.admin_password }}
