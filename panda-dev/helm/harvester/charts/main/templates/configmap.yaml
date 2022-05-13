@@ -14,7 +14,8 @@ data:
             "schema": "{{.Values.database.db_name}}",
             "passwd": "{{.Values.database.db_password}}",
             "port": 3306,
-            "user": "{{.Values.database.db_user}}"
+            "user": "{{.Values.database.db_user}}",
+            "useMySQLdb": true
         }, 
         "master": {
             "gname": "zp", 
