@@ -12,7 +12,7 @@ data:
             "engine": "{{.Values.database.db_backend}}",
             "host": "{{.Release.Name}}-mariadb",
             "schema": "{{.Values.database.db_name}}",
-            "passwd": "{{.Values.database.db_password}}",
+            "password": "{{.Values.database.db_password}}",
             "port": 3306,
             "user": "{{.Values.database.db_user}}",
             "useMySQLdb": true

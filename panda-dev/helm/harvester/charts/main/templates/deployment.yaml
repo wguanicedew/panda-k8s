@@ -67,7 +67,8 @@ spec:
           {{ if .Values.autoStart -}}
           command: ["/bin/sh", "-c"]
           args:
-            - /opt/harvester/etc/rc.d/init.d/panda_harvester-uwsgi start;
+            - sleep 60;
+              /opt/harvester/etc/rc.d/init.d/panda_harvester-uwsgi start;
               sleep infinity & wait
           {{ end -}}
           ports:
