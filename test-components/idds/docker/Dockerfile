@@ -76,8 +76,8 @@ RUN mkdir /opt/idds/config/idds
 # RUN ls /opt/idds/config; ls /opt/idds/config/idds;
 
 # for rest service
-RUN ln -fs /opt/idds/config/hostkey.pem /etc/grid-security/hostkey.pem
-RUN ln -fs /opt/idds/config/hostcert.pem /etc/grid-security/hostcert.pem
+# RUN ln -fs /opt/idds/config/hostkey.pem /etc/grid-security/hostkey.pem
+# RUN ln -fs /opt/idds/config/hostcert.pem /etc/grid-security/hostcert.pem
 
 # to authenticate to rucio
 RUN ln -fs /opt/idds/config/ca.crt /opt/idds/etc/ca.crt

@@ -1,43 +1,43 @@
-# Default values for panda.
+# Default values for idds.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# panda_db, panda_user and panda_schema should not be changed currently
+# idds_db, idds_user and idds_schema should not be changed currently
 database:
-  panda_db: &panda_db "panda_db"
-  panda_user: &panda_user "panda"
-  panda_password: &panda_password "MyPass123"
-  panda_schema: &panda_schema "doma_panda"
+  idds_db: &idds_db "idds_db"
+  idds_user: &idds_user "idds"
+  idds_password: &idds_password "MyPass123"
+  idds_schema: &idds_schema "doma_idds"
 
-jedi:
+main:
   enabled: true
   replicaCount: 1
+  daemonReplicaCount: 1
   image:
-    repository: ghcr.io/pandawms/panda-jedi
-    pullPolicy: Always
+    repository: wguanicedew/idds
+    pullPolicy: "IfNotPresent"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
+    tag: "0.10.17.2"
   autoStart: true
 
   persistentvolume:
-    path: "/mnt/panda-jedi-logs"
+    path: "/mnt/idds-main-logs"
     size: 5Gi
   hostcerts:
     enabled: false
   database:
-    panda_db: *panda_db
-    panda_user: *panda_user
-    panda_password: *panda_password
-    panda_schema: *panda_schema
+    name: *idds_db
+    user: *idds_user
+    password: *idds_password
+    schema: *idds_schema
   service:
     type: ClusterIP
-    httpPort: 25080
-    httpsPort: 25443
+    httpsPort: 8443
   ingress:
     enabled: true
     hosts:
       - domain: cern.ch
-        # hostOverride: panda-k8s-dev-jedi.cern.ch
+        # hostOverride: idds-k8s-dev-jedi.cern.ch
         paths:
           - path: /
             pathType: Prefix
@@ -45,70 +45,29 @@ jedi:
       - secretName: ""
         hosts:
           - domain: cern.ch
-            # hostOverride: panda-k8s-dev-jedi.cern.ch
-server:
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: ghcr.io/pandawms/panda-server
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
-  autoStart: true
-
-  persistentvolume:
-    path: "/mnt/panda-server-logs"
-    size: 5Gi
-  hostcerts:
-    enabled: false
-  database:
-    panda_db: *panda_db
-    panda_user: *panda_user
-    panda_password: *panda_password
-    panda_schema: *panda_schema
-  service:
-    type: ClusterIP
-    httpPort: 25080
-    httpsPort: 25443
-  ingress:
-    enabled: true
-    hosts:
-      - domain: cern.ch
-        # hostOverride: panda-k8s-dev-server.cern.ch
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: ""
-        hosts:
-          - domain: cern.ch
-            # hostOverride: panda-k8s-dev-server.cern.ch
+            # hostOverride: idds-k8s-dev-jedi.cern.ch
 postgres:
   # nameOverride: {{ .Release.Name }}-postgres
   # fullnameOverride: {{ .Release.Name }}-postgres
   enabled: true
   persistentvolume:
-    path: "/mnt/panda-database"
+    path: "/mnt/idds-database"
     size: 5Gi
   image:
-    repository: wguanicedew/panda-centos7-postgresql
+    repository: postgres
     pullPolicy: IfNotPresent
-    tag: "0.1.0"
+    tag: "13.6"
 
   database:
-    name: postgresdb
-    user: admin
-    password: MyPandaPass0508
-    schema: default
-    panda_db: *panda_db
-    panda_user: *panda_user
-    panda_password: *panda_password
-    panda_schema: *panda_schema
+    name: *idds_db
+    user: *idds_user
+    password: *idds_password
+    schema: *idds_schema
   ingress:
     enabled: true
     hosts:
       - domain: cern.ch
-        # hostOverride: panda-k8s-dev-postgres.cern.ch
+        # hostOverride: idds-k8s-dev-postgres.cern.ch
         paths:
           - path: /
             pathType: Prefix
@@ -116,4 +75,4 @@ postgres:
       - secretName: ""
         hosts:
           - domain: cern.ch
-            # hostOverride: panda-k8s-dev-postgres.cern.ch
+            # hostOverride: idds-k8s-dev-postgres.cern.ch

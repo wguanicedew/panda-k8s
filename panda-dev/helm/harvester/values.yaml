@@ -1,8 +1,7 @@
-# Default values for panda.
+# Default values for harvester.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# panda_db, panda_user and panda_schema should not be changed currently
 
 database:
   name: &db_name harvesterdb
@@ -21,7 +20,7 @@ main:
   autoStart: true
 
   persistentvolume:
-    path: "/mnt/panda-harvester-logs"
+    path: "/mnt/harvester-harvester-logs"
     size: 5Gi
   hostcerts:
     enabled: false
@@ -34,7 +33,7 @@ main:
     enabled: false
     hosts:
       - domain: cern.ch
-        # hostOverride: panda-k8s-dev-jedi.cern.ch
+        # hostOverride: harvester-k8s-dev-jedi.cern.ch
         paths:
           - path: /
             pathType: Prefix
@@ -42,7 +41,7 @@ main:
       - secretName: ""
         hosts:
           - domain: cern.ch
-            # hostOverride: panda-k8s-dev-jedi.cern.ch
+            # hostOverride: harvester-k8s-dev-jedi.cern.ch
 mariadb:
   # nameOverride: {{ .Release.Name }}-postgres
   # fullnameOverride: {{ .Release.Name }}-postgres
@@ -67,7 +66,7 @@ mariadb:
     enabled: true
     hosts:
       - domain: cern.ch
-        # hostOverride: panda-k8s-dev-postgres.cern.ch
+        # hostOverride: harvester-k8s-dev-postgres.cern.ch
         paths:
           - path: /
             pathType: Prefix
@@ -75,4 +74,4 @@ mariadb:
       - secretName: ""
         hosts:
           - domain: cern.ch
-            # hostOverride: panda-k8s-dev-postgres.cern.ch
+            # hostOverride: harvester-k8s-dev-postgres.cern.ch

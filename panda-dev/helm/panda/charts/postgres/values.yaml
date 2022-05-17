@@ -5,7 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: wguanicedew/panda-centos7-postgresql
+  # repository: wguanicedew/panda-centos7-postgresql
+  repository: wguanicedew/panda-database
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "0.1.0"

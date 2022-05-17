@@ -91,7 +91,8 @@ postgres:
     path: "/mnt/panda-database"
     size: 5Gi
   image:
-    repository: wguanicedew/panda-centos7-postgresql
+    # repository: wguanicedew/panda-centos7-postgresql
+    repository: wguanicedew/panda-database
     pullPolicy: IfNotPresent
     tag: "0.1.0"
 

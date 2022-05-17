@@ -5,6 +5,14 @@ IDDS_SERVICE=$1
 source /etc/profile.d/conda.sh
 conda activate /opt/idds;
 
+if [ -f /etc/grid-security/hostkey.pem ]; then
+    echo "host certificate is already created."
+elif [ -f /opt/idds/config/hostkey.pem ]; then
+    echo "mount /opt/idds/config/hostkey.pem to /etc/grid-security/hostkey.pem"
+    ln -fs /opt/idds/config/hostkey.pem /etc/grid-security/hostkey.pem
+    ln -fs /opt/idds/config/hostcert.pem /etc/grid-security/hostcert.pem
+fi
+
 if [ -f /opt/idds/config/idds/idds.cfg ]; then
     echo "idds.cfg already mounted."
 else
