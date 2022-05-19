@@ -1,80 +1,59 @@
-# Default values for panda.
+# Default values for activemq.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# panda_db, panda_user and panda_schema should not be changed currently
-database:
-  panda_db: &panda_db "panda_db"
-  panda_user: &panda_user "panda"
-  panda_password: &panda_password "MyPass123"
-  panda_schema: &panda_schema "doma_panda"
+# activemq_db, activemq_user and activemq_schema should not be changed currently
 
-jedi:
+main:
   enabled: true
   replicaCount: 1
   image:
-    repository: ghcr.io/pandawms/panda-jedi
-    pullPolicy: Always
+    repository: webcenter/activemq
+    pullPolicy: "IfNotPresent"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
+    tag: "5.14.3"
   autoStart: true
 
   persistentvolume:
-    path: "/mnt/panda-jedi-logs"
+    path: "/mnt/activemq-data"
     size: 5Gi
   hostcerts:
     enabled: false
-  database:
-    panda_db: *panda_db
-    panda_user: *panda_user
-    panda_password: *panda_password
-    panda_schema: *panda_schema
-  service:
-    type: ClusterIP
-    httpPort: 25080
-    httpsPort: 25443
-  ingress:
-    enabled: true
-    hosts:
-      - domain: cern.ch
-        # hostOverride: panda-k8s-dev-jedi.cern.ch
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: ""
-        hosts:
-          - domain: cern.ch
-            # hostOverride: panda-k8s-dev-jedi.cern.ch
-server:
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: ghcr.io/pandawms/panda-server
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
-  autoStart: true
 
-  persistentvolume:
-    path: "/mnt/panda-server-logs"
-    size: 5Gi
-  hostcerts:
+  minmemory: 1024
+  maxmemory: 2048
+  scheduler:
+    enabled: true
+  auth:
     enabled: false
-  database:
-    panda_db: *panda_db
-    panda_user: *panda_user
-    panda_password: *panda_password
-    panda_schema: *panda_schema
+
+  topics: "iddspanda;pandaidds"
+  queues: "iddspanda;pandaidds"
+
+  admin:
+    name: admin
+    password: MyActiveMQPass0508
+  user:
+    name: idds
+    password: MyPass0508
+  owner:
+    name: iddsowner
+    password: MyPass0508
+  read:
+    name: iddsread
+    password: MyPass0508
+  write:
+    name: iddswrite
+    password: MyPass0508
+
+
   service:
     type: ClusterIP
-    httpPort: 25080
-    httpsPort: 25443
   ingress:
-    enabled: true
+    enabled: false
     hosts:
       - domain: cern.ch
-        # hostOverride: panda-k8s-dev-server.cern.ch
+        # hostOverride: activemq-k8s-dev-jedi.cern.ch
         paths:
           - path: /
             pathType: Prefix
@@ -82,38 +61,4 @@ server:
       - secretName: ""
         hosts:
           - domain: cern.ch
-            # hostOverride: panda-k8s-dev-server.cern.ch
-postgres:
-  # nameOverride: {{ .Release.Name }}-postgres
-  # fullnameOverride: {{ .Release.Name }}-postgres
-  enabled: true
-  persistentvolume:
-    path: "/mnt/panda-database"
-    size: 5Gi
-  image:
-    repository: wguanicedew/panda-centos7-postgresql
-    pullPolicy: IfNotPresent
-    tag: "0.1.0"
-
-  database:
-    name: postgresdb
-    user: admin
-    password: MyPandaPass0508
-    schema: default
-    panda_db: *panda_db
-    panda_user: *panda_user
-    panda_password: *panda_password
-    panda_schema: *panda_schema
-  ingress:
-    enabled: true
-    hosts:
-      - domain: cern.ch
-        # hostOverride: panda-k8s-dev-postgres.cern.ch
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: ""
-        hosts:
-          - domain: cern.ch
-            # hostOverride: panda-k8s-dev-postgres.cern.ch
+            # hostOverride: activemq-k8s-dev-jedi.cern.ch
