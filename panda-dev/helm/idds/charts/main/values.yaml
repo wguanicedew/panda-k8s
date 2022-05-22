@@ -85,10 +85,11 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/secure-backends: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/auth-tls-secret: "default/ca-secret"
+    # nginx.ingress.kubernetes.io/auth-tls-secret: "default/ca-secret"
     # nginx.ingress.kubernetes.io/auth-tls-secret: "ca-secret"
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
-    nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional'
+    # nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional'
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: 'on'
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: '10'
     nginx.ingress.kubernetes.io/auth-proxy-set-headers: X-IDDS-Auth-Type,X-IDDS-Auth-VO,X-IDDS-Auth-Token
     nginx.ingress.kubernetes.io/proxy-pass-headers: X-IDDS-Auth-Type,X-IDDS-Auth-VO,X-IDDS-Auth-Token
