@@ -31,18 +31,32 @@ data:
             {"allow_vos": "atlas,panda_dev,Rubin,Rubin:production"
         },
          "atlas":
-            {"client_secret": "",
+            {"client_secret": "{{.Values.oidc.client_secret}}",
              "audience": "https://pandaserver-doma.cern.ch",
-             "client_id": "",
+             "client_id": "{{.Values.oidc.client_id}}",
              "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
              "vo": "atlas"
             },
          "Rubin":
-            {"client_secret": "",
+            {"client_secret": "{{.Values.oidc.client_secret}}",
              "audience": "https://pandaserver-doma.cern.ch",
-             "client_id": "",
+             "client_id": "{{.Values.oidc.client_id}}",
              "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
              "vo": "Rubin"
+            },
+         "Rubin:production":
+            {"client_secret": "{{.Values.oidc.client_secret}}",
+             "audience": "https://pandaserver-doma.cern.ch",
+             "client_id": "{{.Values.oidc.client_id}}",
+             "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
+             "vo": "Rubin:production"
+            },
+          "panda-dev":
+            {"client_secret": "{{.Values.oidc.client_secret}}",
+             "audience": "https://pandaserver-doma.cern.ch",
+             "client_id": "{{.Values.oidc.client_id}}",
+             "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
+             "vo": "panda-dev"
             }
         },
     "/opt/idds/config/panda.cfg":

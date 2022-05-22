@@ -25,6 +25,10 @@ database:
   password: MyPandaPass0508
   schema: public
 
+oidc:
+  client_id: abc
+  client_secret: abc
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
