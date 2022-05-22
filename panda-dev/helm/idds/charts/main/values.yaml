@@ -62,8 +62,31 @@ ingress:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/auth-tls-secret: "default/ca-secret"
+    # nginx.ingress.kubernetes.io/auth-tls-secret: "ca-secret"
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional'
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: '10'
+    nginx.ingress.kubernetes.io/auth-proxy-set-headers: X-IDDS-Auth-Type,X-IDDS-Auth-VO,X-IDDS-Auth-Token
+    nginx.ingress.kubernetes.io/proxy-pass-headers: X-IDDS-Auth-Type,X-IDDS-Auth-VO,X-IDDS-Auth-Token
+    nginx.org/proxy-pass-headers: X-IDDS-Auth-Type,X-IDDS-Auth-VO,X-IDDS-Auth-Token
+    nginx.ingress.kubernetes.io/configuration-snippet: |-
+        proxy_set_header X-IDDS-Auth-Type $http_x_idds_auth_type;
+        proxy_set_header X-IDDS-Auth-VO $http_x_idds_auth_vo;
+        proxy_set_header X-IDDS-Auth-Token $http_x_idds_auth_token;
+        add_header X-IDDS-Auth-Type $http_x_idds_auth_type;
+        add_header X-IDDS-Auth-VO $http_x_idds_auth_vo;
+        add_header X-IDDS-Auth-Token $http_x_idds_auth_token;
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-prefer-server-ciphers: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |
+        ssl on;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        # ssl_ciphers HIGH:!aNULL:!MD5;
+        ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384";
   hosts:
     - domain: cern.ch
       hostOverride: ""
@@ -72,7 +95,7 @@ ingress:
           pathType: Prefix
 
   tls:
-    - secretName: ""
+    - secretName: idds-dev-main-tls-cert
       hosts:
         - domain: cern.ch
           hostOverride: ""

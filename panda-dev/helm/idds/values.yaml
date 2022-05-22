@@ -17,7 +17,8 @@ main:
     repository: wguanicedew/idds
     pullPolicy: "IfNotPresent"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "0.10.17.2"
+    # tag: "0.10.17.2"
+    tag: "0.10.23"
   autoStart: true
 
   persistentvolume:
@@ -32,7 +33,7 @@ main:
     schema: *idds_schema
   service:
     type: ClusterIP
-    httpsPort: 8443
+    httpsPort: 443
   ingress:
     enabled: true
     hosts:
@@ -42,7 +43,7 @@ main:
           - path: /
             pathType: Prefix
     tls:
-      - secretName: ""
+      - secretName: idds-dev-main-tlssan-cert
         hosts:
           - domain: cern.ch
             # hostOverride: idds-k8s-dev-jedi.cern.ch

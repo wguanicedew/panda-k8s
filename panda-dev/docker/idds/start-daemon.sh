@@ -5,6 +5,8 @@ IDDS_SERVICE=$1
 source /etc/profile.d/conda.sh
 conda activate /opt/idds;
 
+export IDDS_HOME=/opt/idds
+
 if [ -f /etc/grid-security/hostkey.pem ]; then
     echo "host certificate is already created."
 elif [ -f /opt/idds/configmap/hostkey.pem ]; then
@@ -45,12 +47,7 @@ if [ -f /opt/idds/config/idds/gacl ]; then
     echo "gacl already mounted."
 else
     echo "gacl not found. will generate one."
-    python3 /opt/idds/tools/env/merge_idds_configs.py \
-        -s /opt/idds/config_default/gacl $IDDS_OVERRIDE_GACL_CONFIGS \
-        --use-env \
-        --env-string IDDS_CFG_GACL \
-        --replace-whole-file \
-        -d /opt/idds/config/idds/gacl
+    ln -s /opt/idds/config_default/gacl /opt/idds/config/idds/gacl
 fi
 
 if [ -f /opt/idds/config/panda.cfg ]; then
@@ -85,6 +82,7 @@ if [ -f /opt/idds/config/idds/httpd-idds-443-py39-cc7.conf ]; then
     echo "httpd conf already mounted."
 else
     echo "httpd conf not found. will use the default one."
+    sed -i "s/WSGISocketPrefix\ \/var\/log\/idds\/wsgisocks\/wsgi/WSGISocketPrefix\ \/var\/idds\/wsgisocks\/wsgi/g" /opt/idds/config_default/httpd-idds-443-py39-cc7.conf 
     cp /opt/idds/config_default/httpd-idds-443-py39-cc7.conf /opt/idds/config/idds/httpd-idds-443-py39-cc7.conf
 fi
 
@@ -133,6 +131,10 @@ if [ ! -z "$IDDS_PRINT_CFG" ]; then
     echo ""
 fi
 
+sed -i 's/Listen\ 443/#\ Listen\ 443/g' /etc/httpd/conf.d/ssl.conf
+# create database if not exists
+python /opt/idds/tools/env/create_database.py
+python /opt/idds/tools/env/config_monitor.py -s ${IDDS_HOME}/monitor/data/conf.js.template -d ${IDDS_HOME}/monitor/data/conf.js  --host ${IDDS_SERVER}
 
 if [ "${IDDS_SERVICE}" == "rest" ]; then
   echo "starting iDDS ${IDDS_SERVICE} service"

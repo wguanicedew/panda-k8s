@@ -1,4 +1,4 @@
-# JEDI and server configuration
+# iDDS configuration
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -19,10 +19,10 @@ data:
              "random_delay": 60,
               "plugin.notifier": "idds.agents.conductor.plugins.messaging.MessagingSender",
               "plugin.notifier.brokers": "atlas-test-mb.cern.ch",
-              "plugin.notifier.port": 61013,
-              "plugin.notifier.destination": "/queue/atlas.idds",
-              "plugin.notifier.username": "user",
-              "plugin.notifier.password": "password",
+              "plugin.notifier.port": 61613,
+              "plugin.notifier.destination": "/topic/iddspanda",
+              "plugin.notifier.username": "idds",
+              "plugin.notifier.password": "MyPass0508",
               "plugin.notifier.broker_timeout": 10
         }
         },
@@ -73,6 +73,14 @@ data:
             {"testkey": "testvalue"}
         }
     }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "main.fullname" . }}-envs
+data:
+  IDDS_SERVER: {{ include "main.fullname" . }}
 
 {{- if .Values.hostcerts.enabled -}}
 ---

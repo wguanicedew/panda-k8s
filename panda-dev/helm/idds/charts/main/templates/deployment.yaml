@@ -72,8 +72,11 @@ spec:
           {{ end -}}
           ports:
             - name: https
-              containerPort: 8443
+              containerPort: 443
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "main.fullname" . }}-envs
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -115,15 +118,14 @@ kind: Deployment
 metadata:
   name: {{ include "main.fullname" . }}-daemon
   labels:
-    {{- include "main.labels" . | nindent 4 }}
-    app.kubernetes.io/name: main-daemon
+    {{- include "main.labelsDaemon" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.daemonReplicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "main.selectorLabels" . | nindent 6 }}
+      {{- include "main.selectorLabelsDaemon" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -131,7 +133,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "main.selectorLabels" . | nindent 8 }}
+        {{- include "main.selectorLabelsDaemon" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -154,7 +156,7 @@ spec:
           {{ end -}}
           ports:
             - name: https
-              containerPort: 8443
+              containerPort: 443
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

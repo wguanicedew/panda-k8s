@@ -41,12 +41,24 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
+{{- define "main.labelsDaemon" -}}
+helm.sh/chart: {{ include "main.chart" . }}
+{{ include "main.selectorLabelsDaemon" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "main.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "main.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- define "main.selectorLabelsDaemon" -}}
+app.kubernetes.io/name: {{ include "main.name" . }}-daemon
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
