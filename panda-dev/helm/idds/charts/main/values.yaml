@@ -26,8 +26,25 @@ database:
   schema: public
 
 oidc:
-  client_id: abc
-  client_secret: abc
+  atlas:
+    client_id: abc
+    client_secret: abc
+  rubin:
+    client_id: abc
+    client_secret: abc
+  rubin_production:
+    client_id: abc
+    client_secret: abc
+  panda_dev:
+    client_id: abc
+    client_secret: abc
+
+conductor:
+  brokers: atlas-mb.cern.ch
+  port: 61013
+  destination: /topic/doma.idds
+  username: username
+  password: password
 
 imagePullSecrets: []
 nameOverride: ""

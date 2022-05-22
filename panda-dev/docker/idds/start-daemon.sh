@@ -135,6 +135,7 @@ sed -i 's/Listen\ 443/#\ Listen\ 443/g' /etc/httpd/conf.d/ssl.conf
 # create database if not exists
 python /opt/idds/tools/env/create_database.py
 python /opt/idds/tools/env/config_monitor.py -s ${IDDS_HOME}/monitor/data/conf.js.template -d ${IDDS_HOME}/monitor/data/conf.js  --host ${IDDS_SERVER}
+ln -s /opt/idds/configmap/idds2panda_token /opt/idds/config/.token
 
 if [ "${IDDS_SERVICE}" == "rest" ]; then
   echo "starting iDDS ${IDDS_SERVICE} service"

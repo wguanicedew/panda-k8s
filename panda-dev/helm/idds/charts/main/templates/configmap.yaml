@@ -6,57 +6,59 @@ metadata:
 data:
   idds_configmap.json: |-
     {"/opt/idds/config/idds/idds.cfg":
-        {"database":
+        {"common":
+            {"loglevel": "DEBUG"},
+         "database":
             {"default": "postgresql://{{.Values.database.user}}:{{.Values.database.password}}@{{.Release.Name}}-postgres/{{.Values.database.name}}",
              "schema": "{{.Values.database.schema}}",
              "pool_size": 20,
              "pool_recycle": 3600,
              "echo": 0,
              "pool_reset_on_return": "rollback"
-        },
+            },
          "conductor":
             {"threshold_to_release_messages": 1000,
              "random_delay": 60,
               "plugin.notifier": "idds.agents.conductor.plugins.messaging.MessagingSender",
-              "plugin.notifier.brokers": "atlas-test-mb.cern.ch",
-              "plugin.notifier.port": 61613,
-              "plugin.notifier.destination": "/topic/iddspanda",
-              "plugin.notifier.username": "idds",
-              "plugin.notifier.password": "MyPass0508",
+              "plugin.notifier.brokers": "{{.Values.conductor.brokers}}",
+              "plugin.notifier.port": {{.Values.conductor.port}},
+              "plugin.notifier.destination": "{{.Values.conductor.destination}}",
+              "plugin.notifier.username": "{{.Values.conductor.username}}",
+              "plugin.notifier.password": "{{.Values.conductor.password}}",
               "plugin.notifier.broker_timeout": 10
-        }
+            }
         },
     "/opt/idds/config/idds/auth.cfg":
         {"common":
             {"allow_vos": "atlas,panda_dev,Rubin,Rubin:production"
         },
          "atlas":
-            {"client_secret": "{{.Values.oidc.client_secret}}",
+            {"client_secret": "{{.Values.oidc.atlas.client_secret}}",
              "audience": "https://pandaserver-doma.cern.ch",
-             "client_id": "{{.Values.oidc.client_id}}",
+             "client_id": "{{.Values.oidc.atlas.client_id}}",
              "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
              "vo": "atlas"
             },
          "Rubin":
-            {"client_secret": "{{.Values.oidc.client_secret}}",
+            {"client_secret": "{{.Values.oidc.rubin.client_secret}}",
              "audience": "https://pandaserver-doma.cern.ch",
-             "client_id": "{{.Values.oidc.client_id}}",
+             "client_id": "{{.Values.oidc.rubin.client_id}}",
              "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
              "vo": "Rubin"
             },
          "Rubin:production":
-            {"client_secret": "{{.Values.oidc.client_secret}}",
+            {"client_secret": "{{.Values.oidc.rubin_production.client_secret}}",
              "audience": "https://pandaserver-doma.cern.ch",
-             "client_id": "{{.Values.oidc.client_id}}",
+             "client_id": "{{.Values.oidc.rubin_production.client_id}}",
              "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
              "vo": "Rubin:production"
             },
-          "panda-dev":
-            {"client_secret": "{{.Values.oidc.client_secret}}",
+          "panda_dev":
+            {"client_secret": "{{.Values.oidc.panda_dev.client_secret}}",
              "audience": "https://pandaserver-doma.cern.ch",
-             "client_id": "{{.Values.oidc.client_id}}",
+             "client_id": "{{.Values.oidc.panda_dev.client_id}}",
              "oidc_config_url": "https://panda-iam-doma.cern.ch/.well-known/openid-configuration",
-             "vo": "panda-dev"
+             "vo": "panda_dev"
             }
         },
     "/opt/idds/config/panda.cfg":
@@ -66,8 +68,8 @@ data:
              "panda_monitor_url": "https://panda-doma.cern.ch",
              "# PANDA_AUTH_VO": "panda_dev",
              "panda_auth": "oidc",
-             "panda_auth_vo": "Rubin/production",
-             "panda_config_root": "/opt/idds/config/.panda/"
+             "panda_auth_vo": "Rubin:production",
+             "panda_config_root": "/opt/idds/config/"
         }
         },
     "/opt/idds/config/rucio.cfg":
@@ -87,6 +89,12 @@ data:
             {"testkey": "testvalue"}
         }
     }
+
+  idds2panda_token: |-
+{{ .Files.Get "idds2panda_token" | indent 8}}
+
+  idds_configmap_back.json: |-
+{{ .Files.Get "idds_configmap.json" | indent 8}}
 
 ---
 apiVersion: v1

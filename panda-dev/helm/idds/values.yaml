@@ -18,7 +18,7 @@ main:
     pullPolicy: "IfNotPresent"
     # Overrides the image tag whose default is the chart appVersion.
     # tag: "0.10.17.2"
-    tag: "0.10.23"
+    tag: "0.10.23.2"
   autoStart: true
 
   persistentvolume:

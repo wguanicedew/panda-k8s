@@ -1,5 +1,6 @@
 {"/opt/idds/config/idds/idds.cfg":
-    {"database":
+    {"common": {"loglevel": "DEBUG"},
+     "database":
         {"default": "postgresql://idds:idds@localhost/idds",
          "schema": "DOMA_IDDS",
 	 "pool_size": 20,
