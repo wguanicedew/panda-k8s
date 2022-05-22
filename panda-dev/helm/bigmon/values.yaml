@@ -16,7 +16,7 @@ main:
     repository: wguanicedew/bigmon
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "0.2.0"
+    tag: "0.6.1"
 
   autoStart: true
 

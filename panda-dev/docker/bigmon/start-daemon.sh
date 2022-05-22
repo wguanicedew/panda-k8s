@@ -17,8 +17,8 @@ else
         -subj "/C=US/DC=IDDS/OU=computers/CN=$(hostname -f)" \
         -keyout /data/idds/config/hostkey.pem \
         -out /data/idds/config/hostcert.pem
-    ln -fs /opt/idds/config/hostcert.pem /etc/grid-security/hostcert.pem
-    ln -fs /opt/idds/config/hostkey.pem /etc/grid-security/hostkey.pem
+    ln -fs /data/idds/config/hostcert.pem /etc/grid-security/hostcert.pem
+    ln -fs /data/idds/config/hostkey.pem /etc/grid-security/hostkey.pem
 fi
 
 if [ "${BIGMON_SERVICE}" == "all" ]; then
