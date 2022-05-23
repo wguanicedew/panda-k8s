@@ -106,6 +106,7 @@ spec:
           args:
             - sleep 30;
               /bin/bash /opt/panda/etc/configmap/setup_init.sh;
+              chown atlpan /var/cache/pandaserver;
               ln -s /opt/panda/etc/configmap/auth_policies.json /opt/panda/etc/panda/auth_policies.json;
               /etc/rc.d/init.d/httpd-pandasrv start;
               /etc/rc.d/init.d/panda-jedi start;
