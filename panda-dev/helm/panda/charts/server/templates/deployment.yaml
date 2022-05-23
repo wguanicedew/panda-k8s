@@ -28,6 +28,10 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistentvolume.size }}
+  selector:
+    matchLabels:
+      {{- include "server.selectorLabels" . | nindent 6 }}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -67,7 +71,9 @@ spec:
           {{ if .Values.autoStart -}}
           command: [ "/bin/sh", "-c" ]
           args:
-            - /etc/rc.d/init.d/httpd-pandasrv start;
+            - chmod +x /opt/panda/etc/configmap/setup_init.sh;
+              /opt/panda/etc/configmap/setup_init.sh;
+              /etc/rc.d/init.d/httpd-pandasrv start;
               sleep infinity & wait
           {{ end -}}
           ports:

@@ -1,0 +1,38 @@
+{
+  "panda_dev": [
+    [
+      "panda_dev", 
+      {
+        "group": "physics", 
+        "role": "user"
+      }
+    ]
+  ], 
+  "EIC": [
+    [
+      "EIC", 
+      {
+        "group": "physics", 
+        "role": "user"
+      }
+    ]
+  ], 
+  "Rubin": [
+    [
+      "Rubin", 
+      {
+        "group": "physics", 
+        "role": "user"
+      }
+    ]
+  ], 
+  "sphenix": [
+    [
+      "sphenix", 
+      {
+        "group": "physics", 
+        "role": "user"
+      }
+    ]
+  ]
+}

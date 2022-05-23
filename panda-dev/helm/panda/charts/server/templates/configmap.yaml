@@ -31,6 +31,9 @@ data:
         }
     }
 
+  setup_init.sh: |-
+{{ .Files.Get "setup_init.sh" | indent 8}}
+
 {{- if .Values.hostcerts.enabled -}}
 ---
 # host cert and key

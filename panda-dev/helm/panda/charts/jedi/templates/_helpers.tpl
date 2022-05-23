@@ -41,12 +41,24 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
+{{- define "jedi.labelsPandaCache" -}}
+helm.sh/chart: {{ include "jedi.chart" . }}
+{{ include "jedi.selectorLabelsPandaCache" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "jedi.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "jedi.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- define "jedi.selectorLabelsPandaCache" -}}
+app.kubernetes.io/name: {{ include "jedi.name" . }}-pandacache
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

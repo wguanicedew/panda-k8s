@@ -22,6 +22,9 @@ jedi:
   persistentvolume:
     path: "/mnt/panda-jedi-logs"
     size: 5Gi
+    pandacachepath: "/mnt/panda-cache"
+    pandacachesize: 5Gi
+
   hostcerts:
     enabled: false
   database:
@@ -42,7 +45,7 @@ jedi:
           - path: /
             pathType: Prefix
     tls:
-      - secretName: ""
+      - secretName: panda-k8s-dev-jedi-tls-cert
         hosts:
           - domain: cern.ch
             # hostOverride: panda-k8s-dev-jedi.cern.ch
@@ -98,8 +101,8 @@ postgres:
 
   database:
     name: postgresdb
-    user: admin
-    password: MyPandaPass0508
+    user: postgres
+    password: password
     schema: default
     panda_db: *panda_db
     panda_user: *panda_user

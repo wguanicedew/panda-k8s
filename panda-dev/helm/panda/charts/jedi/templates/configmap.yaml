@@ -47,6 +47,25 @@ data:
         }
     }
 
+  setup_init.sh: |-
+{{ .Files.Get "setup_init.sh" | indent 8}}
+
+  auth_policies.json: |-
+{{ .Files.Get "auth/auth_policies.json" | indent 8}}
+
+---
+# oidc auth files
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "jedi.fullname" . }}-auth
+data:
+    panda_dev_auth_config.json: |-
+{{ .Files.Get "auth/panda_dev_auth_config.json" | indent 8}}
+
+    Rubin_auth_config.json: |-
+{{ .Files.Get "auth/Rubin_auth_config.json" | indent 8}}
+
 {{- if .Values.hostcerts.enabled -}}
 ---
 # host cert and key
