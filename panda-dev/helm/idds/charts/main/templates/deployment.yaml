@@ -28,6 +28,9 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistentvolume.size }}
+  selector:
+    matchLabels:
+      {{- include "main.selectorLabels" . | nindent 6 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
