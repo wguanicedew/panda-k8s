@@ -1,3 +1,4 @@
+{{- if .Values.persistentvolume.enabled -}}
 # pv
 kind: PersistentVolume
 apiVersion: v1
@@ -32,6 +33,7 @@ spec:
     matchLabels:
       {{- include "main.selectorLabels" . | nindent 6 }}
 ---
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -164,8 +166,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+              {{- if .Values.persistentvolume.enabled }}
               # - name: {{ include "main.fullname" . }}-logs
               #  mountPath: /var/log/idds/
+              {{- end }}
               - name: {{ include "main.fullname" . }}-configmap
                 mountPath: /opt/idds/configmap
               {{- if .Values.hostcerts.enabled -}}
@@ -185,9 +189,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        {{- if .Values.persistentvolume.enabled}}
         - name: {{ include "main.fullname" . }}-logs
           persistentVolumeClaim:
             claimName: {{ include "main.fullname" . }}
+        {{- end }}
         - name: {{ include "main.fullname" . }}-configmap
           configMap:
               name: {{ include "main.fullname" . }}-configmap

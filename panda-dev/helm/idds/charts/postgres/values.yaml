@@ -11,6 +11,7 @@ image:
   tag: "13.6"
 
 persistentvolume:
+  enabled: true
   path: "/mnt/idds-database"
   size: 5Gi
 
