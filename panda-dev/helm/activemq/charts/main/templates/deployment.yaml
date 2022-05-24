@@ -98,10 +98,10 @@ spec:
           volumeMounts:
               # - name: {{ include "main.fullname" . }}-logs
               #  mountPath: /var/log/activemq/
-              # {{- if .Values.persistentvolume.enabled -}}
+              {{- if .Values.persistentvolume.enabled }}
               - name: {{ include "main.fullname" . }}-data
                 mountPath: /data/activemq
-              # {{- end }}
+              {{- end }}
               # - name: {{ include "main.fullname" . }}-config
               #   mountPath: /opt/activemq/conf
               # - name: {{ include "main.fullname" . }}-configmap
@@ -122,7 +122,7 @@ spec:
         # - name: {{ include "main.fullname" . }}-logs
         #   persistentVolumeClaim:
         #     claimName: {{ include "main.fullname" . }}-logs
-        {{- if .Values.persistentvolume.enabled -}}
+        {{- if .Values.persistentvolume.enabled}}
         - name: {{ include "main.fullname" . }}-data
           persistentVolumeClaim:
             claimName: {{ include "main.fullname" . }}-data

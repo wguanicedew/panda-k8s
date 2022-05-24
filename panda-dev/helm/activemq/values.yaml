@@ -15,7 +15,8 @@ main:
   autoStart: true
 
   persistentvolume:
-    enabled: false         # false for SLAC
+    enabled: false
+    # false for SLAC
     path: "/mnt/activemq-data"
     size: 5Gi
   hostcerts:
