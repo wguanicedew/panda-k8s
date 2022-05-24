@@ -1,3 +1,4 @@
+{{- if .Values.persistentvolume.enabled -}}
 # pv
 kind: PersistentVolume
 apiVersion: v1
@@ -30,7 +31,11 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistentvolume.size }}
+  selector:
+    matchLabels:
+      {{- include "main.selectorLabels" . | nindent 6 }}
 ---
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -93,8 +98,10 @@ spec:
           volumeMounts:
               # - name: {{ include "main.fullname" . }}-logs
               #  mountPath: /var/log/activemq/
+              # {{- if .Values.persistentvolume.enabled -}}
               - name: {{ include "main.fullname" . }}-data
                 mountPath: /data/activemq
+              # {{- end }}
               # - name: {{ include "main.fullname" . }}-config
               #   mountPath: /opt/activemq/conf
               # - name: {{ include "main.fullname" . }}-configmap
@@ -115,9 +122,11 @@ spec:
         # - name: {{ include "main.fullname" . }}-logs
         #   persistentVolumeClaim:
         #     claimName: {{ include "main.fullname" . }}-logs
+        {{- if .Values.persistentvolume.enabled -}}
         - name: {{ include "main.fullname" . }}-data
           persistentVolumeClaim:
             claimName: {{ include "main.fullname" . }}-data
+        {{- end }}
         # - name: {{ include "main.fullname" . }}-conf
         #   persistentVolumeClaim:
         #     claimName: {{ include "main.fullname" . }}-conf

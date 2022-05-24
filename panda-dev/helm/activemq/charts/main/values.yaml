@@ -14,6 +14,7 @@ image:
 autoStart: true
 
 persistentvolume:
+  enabled: true
   path: "/mnt/activemq-main-data"
   size: 5Gi
 hostcerts:
