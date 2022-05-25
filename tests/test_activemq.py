@@ -52,7 +52,10 @@ class Receiver(stomp.ConnectionListener):
             self.logger.info("received message: %s", body)
 
 if True:
-    broker = '10.254.241.118'
+    # It's an internal ip of k8s.
+    # To test it, user can login a pod which can communicate with activemq,
+    # for example "kubectl exec -it idds-dev-main-daemon-fd58d9d67-n558p -- bash"
+    broker = '10.102.232.81'     # get the k8s ClusterIP for service 'activemq-dev-main'
     receiver_port = 61613
     port = 61613
     topic = '/topic/pandaidds'
