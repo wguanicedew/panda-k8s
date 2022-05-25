@@ -22,7 +22,7 @@ main:
   autoStart: true
 
   persistentvolume:
-    enabled: true
+    enabled: false
     path: "/mnt/idds-main-logs"
     size: 5Gi
   hostcerts:
@@ -38,7 +38,7 @@ main:
   ingress:
     enabled: true
     hosts:
-      - domain: cern.ch
+      - domain: slac.stanford.edu
         # hostOverride: idds-k8s-dev-jedi.cern.ch
         paths:
           - path: /
@@ -46,14 +46,14 @@ main:
     tls:
       - secretName: idds-dev-main-tlssan-cert
         hosts:
-          - domain: cern.ch
+          - domain: slac.stanford.edu
             # hostOverride: idds-k8s-dev-jedi.cern.ch
 postgres:
   # nameOverride: {{ .Release.Name }}-postgres
   # fullnameOverride: {{ .Release.Name }}-postgres
   enabled: true
   persistentvolume:
-    enabled: true
+    enabled: false
     path: "/mnt/idds-database"
     size: 5Gi
   image:
@@ -67,7 +67,7 @@ postgres:
     password: *idds_password
     schema: *idds_schema
   ingress:
-    enabled: true
+    enabled: false
     hosts:
       - domain: cern.ch
         # hostOverride: idds-k8s-dev-postgres.cern.ch
