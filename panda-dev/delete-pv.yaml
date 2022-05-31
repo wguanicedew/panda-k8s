@@ -1,0 +1,28 @@
+$patch: delete
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: panda-dev-jedi
+
+---
+$patch: delete
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: panda-dev-jedi-pandacache
+
+---
+$patch: delete
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: panda-dev-postgres
+
+---
+$patch: delete
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: panda-dev-server
+
+

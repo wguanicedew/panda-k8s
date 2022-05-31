@@ -1,0 +1,142 @@
+---
+# Source: activemq/charts/main/templates/configmap.yaml
+# JEDI and server configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: activemq-dev-main-configmap
+data:
+  ACTIVEMQ_NAME: activemq-dev-main
+  ACTIVEMQ_CONFIG_DEFAULTACCOUNT: "false"
+  ACTIVEMQ_ADMIN_LOGIN: admin
+  ACTIVEMQ_ADMIN_PASSWORD: MyActiveMQPass0508
+  ACTIVEMQ_ENABLED_SCHEDULER: "true"
+  ACTIVEMQ_ENABLED_AUTH: "false"
+  ACTIVEMQ_STATIC_TOPICS: iddspanda;pandaidds
+  ACTIVEMQ_STATIC_QUEUES: iddspanda;pandaidds
+  ACTIVEMQ_MIN_MEMORY: "1024"
+  ACTIVEMQ_MAX_MEMORY: "2048"
+  ACTIVEMQ_USER_LOGIN: idds
+  ACTIVEMQ_USER_PASSWORD: MyPass0508
+  ACTIVEMQ_OWNER_LOGIN: iddsowner
+  ACTIVEMQ_OWNER_PASSWORD: MyPass0508
+  ACTIVEMQ_WRITE_LOGIN: iddswrite
+  ACTIVEMQ_WRITE_PASSWORD: MyPass0508
+  ACTIVEMQ_READ_LOGIN: iddsread
+  ACTIVEMQ_READ_PASSWORD: MyPass0508
+---
+# Source: activemq/charts/main/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: activemq-dev-main
+  labels:
+    helm.sh/chart: main-0.1.0
+    app.kubernetes.io/name: main
+    app.kubernetes.io/instance: activemq-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8161
+      targetPort: port8161
+      protocol: TCP
+      name: port8161
+    - port: 5672
+      targetPort: port5672
+      protocol: TCP
+      name: port5672
+    - port: 1883
+      targetPort: port1883
+      protocol: TCP
+      name: port1883
+    - port: 61616
+      targetPort: port61616
+      protocol: TCP
+      name: port61616
+    - port: 61613
+      targetPort: port61613
+      protocol: TCP
+      name: port61613
+    - port: 61614
+      targetPort: port61614
+      protocol: TCP
+      name: port61614
+  selector:
+    app.kubernetes.io/name: main
+    app.kubernetes.io/instance: activemq-dev
+---
+# Source: activemq/charts/main/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activemq-dev-main
+  labels:
+    helm.sh/chart: main-0.1.0
+    app.kubernetes.io/name: main
+    app.kubernetes.io/instance: activemq-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: main
+      app.kubernetes.io/instance: activemq-dev
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: main
+        app.kubernetes.io/instance: activemq-dev
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: main
+          securityContext:
+            {}
+          image: "webcenter/activemq:5.14.3"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: port8161
+              containerPort: 8161
+              protocol: TCP
+            - name: port5672
+              containerPort: 5672
+              protocol: TCP
+            - name: port1883
+              containerPort: 1883
+              protocol: TCP
+            - name: port61616
+              containerPort: 61616
+              protocol: TCP
+            - name: port61613
+              containerPort: 61613
+              protocol: TCP
+            - name: port61614
+              containerPort: 61614
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: activemq-dev-main-configmap
+          resources:
+            {}
+          volumeMounts:
+              # - name: activemq-dev-main-logs
+              #  mountPath: /var/log/activemq/
+              # - name: activemq-dev-main-config
+              #   mountPath: /opt/activemq/conf
+              # - name: activemq-dev-main-configmap
+              #   mountPath: /activemq/configmap
+      volumes:
+        # - name: activemq-dev-main-logs
+        #   persistentVolumeClaim:
+        #     claimName: activemq-dev-main-logs
+        # - name: activemq-dev-main-conf
+        #   persistentVolumeClaim:
+        #     claimName: activemq-dev-main-conf
+        # - name: activemq-dev-main-configmap
+        #   configMap:
+        #       name: activemq-dev-main-configmap
