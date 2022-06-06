@@ -106,9 +106,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: {{ include "rest.fullname" . }}-logs
-          persistentVolumeClaim:
-            claimName: {{ include "rest.fullname" . }}
+        # - name: {{ include "rest.fullname" . }}-logs
+        #   persistentVolumeClaim:
+        #     claimName: {{ include "rest.fullname" . }}
         - name: {{ include "rest.fullname" . }}-configmap
           configMap:
               name: {{ include "rest.fullname" . }}-configmap

@@ -102,7 +102,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "rest.fullname" . }}-envs
 data:
-  IDDS_SERVER: {{ include "rest.fullname" . }}.cern.ch
+  IDDS_SERVER: {{.Values.iddsServer}}
 
 {{- if .Values.hostcerts.enabled -}}
 ---
