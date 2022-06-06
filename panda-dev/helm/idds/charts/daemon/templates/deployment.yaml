@@ -37,7 +37,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "daemon.fullname" . }}-daemon
+  name: {{ include "daemon.fullname" . }}
   labels:
     {{- include "daemon.labels" . | nindent 4 }}
 spec:
