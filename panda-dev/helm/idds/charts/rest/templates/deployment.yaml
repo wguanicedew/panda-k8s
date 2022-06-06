@@ -3,9 +3,9 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ include "main.fullname" . }}
+  name: {{ include "rest.fullname" . }}
   labels:
-      {{- include "main.labels" . | nindent 4 }}
+      {{- include "rest.labels" . | nindent 4 }}
 spec:
   storageClassName: manual
   capacity:
@@ -19,9 +19,9 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "main.fullname" . }}
+  name: {{ include "rest.fullname" . }}
   labels:
-    {{- include "main.labels" . | nindent 4 }}
+    {{- include "rest.labels" . | nindent 4 }}
 spec:
   storageClassName: manual
   accessModes:
@@ -31,22 +31,22 @@ spec:
       storage: {{ .Values.persistentvolume.size }}
   selector:
     matchLabels:
-      {{- include "main.selectorLabels" . | nindent 6 }}
+      {{- include "rest.selectorLabels" . | nindent 6 }}
 ---
 {{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "main.fullname" . }}
+  name: {{ include "rest.fullname" . }}
   labels:
-    {{- include "main.labels" . | nindent 4 }}
+    {{- include "rest.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "main.selectorLabels" . | nindent 6 }}
+      {{- include "rest.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -54,13 +54,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "main.selectorLabels" . | nindent 8 }}
+        {{- include "rest.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "main.serviceAccountName" . }}
+      serviceAccountName: {{ include "rest.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -81,16 +81,16 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ include "main.fullname" . }}-envs
+                name: {{ include "rest.fullname" . }}-envs
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-              # - name: {{ include "main.fullname" . }}-logs
+              # - name: {{ include "rest.fullname" . }}-logs
               #  mountPath: /var/log/idds/
-              - name: {{ include "main.fullname" . }}-configmap
+              - name: {{ include "rest.fullname" . }}-configmap
                 mountPath: /opt/idds/configmap
               {{- if .Values.hostcerts.enabled -}}
-              - name: {{ include "main.fullname" . }}-certs
+              - name: {{ include "rest.fullname" . }}-certs
                 mountPath: /opt/idds/configmap
               {{- end }}
       {{- with .Values.nodeSelector }}
@@ -106,14 +106,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: {{ include "main.fullname" . }}-logs
+        - name: {{ include "rest.fullname" . }}-logs
           persistentVolumeClaim:
-            claimName: {{ include "main.fullname" . }}
-        - name: {{ include "main.fullname" . }}-configmap
+            claimName: {{ include "rest.fullname" . }}
+        - name: {{ include "rest.fullname" . }}-configmap
           configMap:
-              name: {{ include "main.fullname" . }}-configmap
+              name: {{ include "rest.fullname" . }}-configmap
         {{- if .Values.hostcerts.enabled -}}
-        - name: {{ include "main.fullname" . }}-certs
+        - name: {{ include "rest.fullname" . }}-certs
           configMap:
-              name: {{ include "main.fullname" . }}-certs
+              name: {{ include "rest.fullname" . }}-certs
         {{- end }}

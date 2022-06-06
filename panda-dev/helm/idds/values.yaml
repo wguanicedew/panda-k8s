@@ -66,7 +66,7 @@ rest:
     enabled: true
     hosts:
       - domain: slac.stanford.edu
-        # hostOverride: idds-k8s-dev-jedi.cern.ch
+        hostOverride: idds-dev.slac.stanford.edu
         paths:
           - path: /
             pathType: Prefix
@@ -74,7 +74,7 @@ rest:
       - secretName: idds-dev-main-tlssan-cert
         hosts:
           - domain: slac.stanford.edu
-            # hostOverride: idds-k8s-dev-jedi.cern.ch
+            hostOverride: idds-dev.slac.stanford.edu
 
 postgres:
   # nameOverride: {{ .Release.Name }}-postgres

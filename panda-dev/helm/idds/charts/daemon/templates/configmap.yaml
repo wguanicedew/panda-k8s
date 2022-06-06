@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "main.fullname" . }}-configmap
+  name: {{ include "daemon.fullname" . }}-configmap
 data:
   idds_configmap.json: |-
     {"/opt/idds/config/idds/idds.cfg":
@@ -100,7 +100,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "main.fullname" . }}-envs
+  name: {{ include "daemon.fullname" . }}-envs
 data:
   IDDS_SERVER: {{.Values.iddsServer}}
 
@@ -110,7 +110,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: {{ include "main.fullname" . }}-certs
+    name: {{ include "daemon.fullname" . }}-certs
 data:
     hostcert.pem: |-
 {{ .Files.Get "hostcert.pem" | indent 8}}
