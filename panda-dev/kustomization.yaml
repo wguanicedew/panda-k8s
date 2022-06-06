@@ -1,0 +1,12 @@
+namespace: panda
+
+resources:
+- ns.yaml
+- activemq.yaml
+- idds.yaml
+- panda.yaml
+
+# remove items from helm which we don't need
+patchesStrategicMerge:
+- delete-pv.yaml
+- pvc-patch.yaml

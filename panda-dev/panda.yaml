@@ -1,0 +1,733 @@
+---
+# Source: panda/charts/jedi/templates/configmap.yaml
+# JEDI and server configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: panda-dev-jedi-configmap
+data:
+  panda_server_configmap.json: |-
+    {
+        "server": {
+            "CRIC_URL_CM": "https://atlas-cric.cern.ch/api/core/sitematrix/query/?json&json_pretty=0",
+            "CRIC_URL_DDMBLACKLIST": "https://datalake-cric.cern.ch/api/atlas/ddmendpointstatus/query/?json&activity=write_wan&fstate=OFF",
+            "CRIC_URL_DDMENDPOINTS": "https://datalake-cric.cern.ch/api/atlas/ddmendpoint/query/?json",
+            "CRIC_URL_SCHEDCONFIG": "https://datalake-cric.cern.ch/api/atlas/pandaqueue/query/?json",
+            "CRIC_URL_SITES": "https://datalake-cric.cern.ch/api/atlas/site/query/?json",
+            "adder_plugins": "wlcg:dataservice.AdderDummyPlugin:AdderDummyPlugin",
+            "backend": "postgres",
+            "dbhost": "panda-dev-postgres",
+            "dbname": "panda_db",
+            "dbpasswd": "MyPass123",
+            "dbport": 5432,
+            "dbuser": "panda",
+            "production_dns": "FIXME: a comma-separated list of privileged user names",
+            "pserveralias": "FIXME: a common name of httpd",
+            "schemaDEFT": "DOMA_DEFT",
+            "schemaJEDI": "DOMA_PANDA",
+            "schemaMETA": "DOMA_PANDAMETA",
+            "schemaPANDA": "DOMA_PANDA",
+            "schemaPANDAARCH": "DOMA_PANDAARCH",
+            "setupper_plugins": "wlcg:dataservice.SetupperDummyPlugin:SetupperDummyPlugin",
+            "token_authType": "oidc"
+        }
+    }
+  panda_jedi_configmap.json: |-
+    {
+        "db": {
+            "backend": "postgres",
+            "dbhost": "panda-dev-postgres",
+            "dbname": "panda_db",
+            "dbpasswd": "MyPass123",
+            "dbport": 5432,
+            "dbuser": "panda",
+            "schemaDEFT": "DOMA_DEFT",
+            "schemaJEDI": "DOMA_PANDA",
+            "schemaMETA": "DOMA_PANDAMETA",
+            "schemaPANDA": "DOMA_PANDA",
+            "schemaPANDAARCH": "DOMA_PANDAARCH"
+        }
+    }
+
+  setup_init.sh: |-
+        #!/bin/bash
+        
+        if [ -f /opt/panda/etc/cert/hostcert.pem ]; then
+            echo "host certificate is already created." 
+        else
+            mkdir -p /opt/panda/etc/cert
+            openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+                -subj "/C=US/DC=IDDS/OU=computers/CN=$(hostname -f)" \
+                -keyout /opt/panda/etc/cert/hostkey.pem \
+                -out /opt/panda/etc/cert/hostcert.pem
+        fi
+        
+        
+
+  auth_policies.json: |-
+        {
+          "panda_dev": [
+            [
+              "panda_dev", 
+              {
+                "group": "physics", 
+                "role": "user"
+              }
+            ]
+          ], 
+          "EIC": [
+            [
+              "EIC", 
+              {
+                "group": "physics", 
+                "role": "user"
+              }
+            ]
+          ], 
+          "Rubin": [
+            [
+              "Rubin", 
+              {
+                "group": "physics", 
+                "role": "user"
+              }
+            ]
+          ], 
+          "sphenix": [
+            [
+              "sphenix", 
+              {
+                "group": "physics", 
+                "role": "user"
+              }
+            ]
+          ]
+        }
+---
+# Source: panda/charts/jedi/templates/configmap.yaml
+# oidc auth files
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: panda-dev-jedi-auth
+data:
+    panda_dev_auth_config.json: |-
+        
+
+    Rubin_auth_config.json: |-
+---
+# Source: panda/charts/postgres/templates/configmap.yaml
+# config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: panda-dev-postgres-configmap
+  labels:
+    helm.sh/chart: postgres-0.1.0
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  POSTGRES_DB: postgresdb
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password
+  POSTGRES_SCHEMA: default
+  PANDA_DB: panda_db
+  PANDA_USER: panda
+  PANDA_PASSWORD: MyPass123
+  PANDA_SCHEMA: doma_panda
+---
+# Source: panda/charts/server/templates/configmap.yaml
+# JEDI and server configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: panda-dev-server-configmap
+data:
+  panda_server_configmap.json: |-
+    {
+        "server": {
+            "CRIC_URL_CM": "https://atlas-cric.cern.ch/api/core/sitematrix/query/?json&json_pretty=0",
+            "CRIC_URL_DDMBLACKLIST": "https://datalake-cric.cern.ch/api/atlas/ddmendpointstatus/query/?json&activity=write_wan&fstate=OFF",
+            "CRIC_URL_DDMENDPOINTS": "https://datalake-cric.cern.ch/api/atlas/ddmendpoint/query/?json",
+            "CRIC_URL_SCHEDCONFIG": "https://datalake-cric.cern.ch/api/atlas/pandaqueue/query/?json",
+            "CRIC_URL_SITES": "https://datalake-cric.cern.ch/api/atlas/site/query/?json",
+            "adder_plugins": "wlcg:dataservice.AdderDummyPlugin:AdderDummyPlugin",
+            "backend": "postgres",
+            "dbhost": "panda-dev-postgres",
+            "dbname": "panda_db",
+            "dbpasswd": "MyPass123",
+            "dbport": 5432,
+            "dbuser": "panda",
+            "production_dns": "FIXME: a comma-separated list of privileged user names",
+            "pserveralias": "FIXME: a common name of httpd",
+            "schemaDEFT": "DOMA_DEFT",
+            "schemaJEDI": "DOMA_PANDA",
+            "schemaMETA": "DOMA_PANDAMETA",
+            "schemaPANDA": "DOMA_PANDA",
+            "schemaPANDAARCH": "DOMA_PANDAARCH",
+            "setupper_plugins": "wlcg:dataservice.SetupperDummyPlugin:SetupperDummyPlugin",
+            "token_authType": "oidc"
+        }
+    }
+
+  setup_init.sh: |-
+        #!/bin/bash
+        
+        if [ -f /opt/panda/etc/cert/hostcert.pem ]; then
+            echo "host certificate is already created." 
+        else
+            mkdir -p /opt/panda/etc/cert
+            openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+                -subj "/C=US/DC=IDDS/OU=computers/CN=$(hostname -f)" \
+                -keyout /opt/panda/etc/cert/hostkey.pem \
+                -out /opt/panda/etc/cert/hostcert.pem
+        fi
+---
+# Source: panda/charts/jedi/templates/deployment.yaml
+# pv
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: panda-dev-jedi
+  labels:
+    helm.sh/chart: jedi-0.1.0
+    app.kubernetes.io/name: jedi
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /mnt/panda-jedi-logs
+---
+# Source: panda/charts/jedi/templates/deployment.yaml
+# pv panda cache
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: panda-dev-jedi-pandacache
+  labels:
+    helm.sh/chart: jedi-0.1.0
+    app.kubernetes.io/name: jedi-pandacache
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /mnt/panda-cache
+---
+# Source: panda/charts/postgres/templates/deployment.yaml
+# pv
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: panda-dev-postgres
+  labels:
+    helm.sh/chart: postgres-0.1.0
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /mnt/panda-database
+---
+# Source: panda/charts/server/templates/deployment.yaml
+# pv
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: panda-dev-server
+  labels:
+    helm.sh/chart: server-0.1.0
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /mnt/panda-server-logs
+---
+# Source: panda/charts/jedi/templates/deployment.yaml
+# pv claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: panda-dev-jedi
+  labels:
+    helm.sh/chart: jedi-0.1.0
+    app.kubernetes.io/name: jedi
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jedi
+      app.kubernetes.io/instance: panda-dev
+---
+# Source: panda/charts/jedi/templates/deployment.yaml
+# pv claim panda cache
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: panda-dev-jedi-pandacache
+  labels:
+    helm.sh/chart: jedi-0.1.0
+    app.kubernetes.io/name: jedi-pandacache
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jedi-pandacache
+      app.kubernetes.io/instance: panda-dev
+---
+# Source: panda/charts/postgres/templates/deployment.yaml
+# pv claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: panda-dev-postgres
+  labels:
+    helm.sh/chart: postgres-0.1.0
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+      app.kubernetes.io/instance: panda-dev
+---
+# Source: panda/charts/server/templates/deployment.yaml
+# pv claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: panda-dev-server
+  labels:
+    helm.sh/chart: server-0.1.0
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: server
+      app.kubernetes.io/instance: panda-dev
+---
+# Source: panda/charts/jedi/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: panda-dev-jedi
+  labels:
+    helm.sh/chart: jedi-0.1.0
+    app.kubernetes.io/name: jedi
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 25080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 25443
+      targetPort: https
+      protocol: TCP
+      name: https
+  selector:
+    app.kubernetes.io/name: jedi
+    app.kubernetes.io/instance: panda-dev
+---
+# Source: panda/charts/postgres/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: panda-dev-postgres
+  labels:
+    helm.sh/chart: postgres-0.1.0
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: postgres-port
+      protocol: TCP
+      name: postgres-port
+  selector:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: panda-dev
+---
+# Source: panda/charts/server/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: panda-dev-server
+  labels:
+    helm.sh/chart: server-0.1.0
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 25080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 25443
+      targetPort: https
+      protocol: TCP
+      name: https
+  selector:
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: panda-dev
+---
+# Source: panda/charts/jedi/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panda-dev-jedi
+  labels:
+    helm.sh/chart: jedi-0.1.0
+    app.kubernetes.io/name: jedi
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jedi
+      app.kubernetes.io/instance: panda-dev
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: jedi
+        app.kubernetes.io/instance: panda-dev
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: jedi
+          securityContext:
+            {}
+          image: "ghcr.io/pandawms/panda-jedi:latest"
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c"]
+          args:
+            - sleep 30;
+              /bin/bash /opt/panda/etc/configmap/setup_init.sh;
+              chown atlpan /var/cache/pandaserver;
+              ln -s /opt/panda/etc/configmap/auth_policies.json /opt/panda/etc/panda/auth_policies.json;
+              /etc/rc.d/init.d/httpd-pandasrv start;
+              /etc/rc.d/init.d/panda-jedi start;
+              sleep infinity & wait
+          ports:
+            - name: http
+              containerPort: 25080
+              protocol: TCP
+            - name: https
+              containerPort: 25443
+              protocol: TCP
+          resources:
+            {}
+          volumeMounts:
+              # - name: panda-dev-jedi-logs
+              #  mountPath: /var/log/jedi/
+              - name: panda-dev-jedi-pandacache
+                mountPath: /var/cache/pandaserver
+              - name: panda-dev-jedi-configmap
+                mountPath: /opt/panda/etc/configmap
+              - name: panda-dev-jedi-auth
+                mountPath: /opt/panda/etc/panda/auth
+      volumes:
+        - name: panda-dev-jedi-logs
+          persistentVolumeClaim:
+            claimName: panda-dev-jedi
+        - name: panda-dev-jedi-pandacache
+          persistentVolumeClaim:
+            claimName: panda-dev-jedi-pandacache
+        - name: panda-dev-jedi-configmap
+          configMap:
+              name: panda-dev-jedi-configmap
+        - name: panda-dev-jedi-auth
+          configMap:
+              name: panda-dev-jedi-auth
+---
+# Source: panda/charts/postgres/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panda-dev-postgres
+  labels:
+    helm.sh/chart: postgres-0.1.0
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+      app.kubernetes.io/instance: panda-dev
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/instance: panda-dev
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: postgres
+          securityContext:
+            {}
+          image: "wguanicedew/panda-database:0.1.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: postgres-port
+              containerPort: 5432
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: panda-dev-postgres-configmap
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: panda-dev-postgres-data
+      volumes:
+        - name: panda-dev-postgres-data
+          persistentVolumeClaim:
+            claimName: panda-dev-postgres
+---
+# Source: panda/charts/server/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panda-dev-server
+  labels:
+    helm.sh/chart: server-0.1.0
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: server
+      app.kubernetes.io/instance: panda-dev
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: server
+        app.kubernetes.io/instance: panda-dev
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: server
+          securityContext:
+            {}
+          image: "ghcr.io/pandawms/panda-server:latest"
+          imagePullPolicy: Always
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - chmod +x /opt/panda/etc/configmap/setup_init.sh;
+              /opt/panda/etc/configmap/setup_init.sh;
+              /etc/rc.d/init.d/httpd-pandasrv start;
+              sleep infinity & wait
+          ports:
+            - name: http
+              containerPort: 25080
+              protocol: TCP
+            - name: https
+              containerPort: 25443
+              protocol: TCP
+          resources:
+            {}
+          volumeMounts:
+              # - name: panda-dev-server-logs
+              #  mountPath: /var/log/panda-server/
+              - name: panda-dev-server-configmap
+                mountPath: /opt/panda/etc/configmap
+      volumes:
+        - name: panda-dev-server-logs
+          persistentVolumeClaim:
+            claimName: panda-dev-server
+        - name: panda-dev-server-configmap
+          configMap:
+              name: panda-dev-server-configmap
+---
+# Source: panda/charts/jedi/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: panda-dev-jedi
+  labels:
+    helm.sh/chart: jedi-0.1.0
+    app.kubernetes.io/name: jedi
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-proxy-set-headers: Authorization,Origin
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: optional
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/configuration-snippet: |-
+      proxy_set_header Authorization $http_authorization;
+      proxy_set_header Origin $http_origin;
+      add_header Authorization $http_authorization;
+      add_header Origin $http_origin;
+    nginx.ingress.kubernetes.io/proxy-pass-headers: Authorization,Origin
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - "panda-dev-jedi.cern.ch"
+      secretName: panda-k8s-dev-jedi-tls-cert
+  rules:
+    - host: "panda-dev-jedi.cern.ch"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: panda-dev-jedi
+                port:
+                  number: 25443
+---
+# Source: panda/charts/postgres/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: panda-dev-postgres
+  labels:
+    helm.sh/chart: postgres-0.1.0
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - "panda-dev-postgres.cern.ch"
+      secretName: 
+  rules:
+    - host: "panda-dev-postgres.cern.ch"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: panda-dev-postgres
+                port:
+                  number: 5432
+---
+# Source: panda/charts/server/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: panda-dev-server
+  labels:
+    helm.sh/chart: server-0.1.0
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: panda-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: optional
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - "panda-dev-server.cern.ch"
+      secretName: 
+  rules:
+    - host: "panda-dev-server.cern.ch"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: panda-dev-server
+                port:
+                  number: 25443
