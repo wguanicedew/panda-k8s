@@ -13,6 +13,8 @@ image:
 # start the service when pod gets started
 autoStart: true
 
+iddsServer: localhost
+
 persistentvolume:
   enabled: true
   path: "/mnt/idds-main-logs"
