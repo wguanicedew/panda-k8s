@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: panda-dev-jedi
+spec:
+  selector:
+    $patch: delete
+  storageClassName: wekafs--sdf-k8s01
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: panda-dev-jedi-pandacache
+spec:
+  selector:
+    $patch: delete
+  storageClassName: wekafs--sdf-k8s01
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: panda-dev-server
+spec:
+  selector:
+    $patch: delete
+  storageClassName: wekafs--sdf-k8s01
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: panda-dev-postgres
+spec:
+  selector:
+    $patch: delete
+  storageClassName: wekafs--sdf-k8s01
+
