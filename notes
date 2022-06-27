@@ -1,0 +1,33 @@
+1. It will stop working for ingress, 
+# SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1 
+[Sun May 22 20:09:27.175368 2022] [ssl:info] [pid 156102] [client 10.100.43.146:54916] AH01964: Connection to child 12 established (server 2001:4860::e:2b91:25443)
+[Sun May 22 20:09:27.176750 2022] [ssl:info] [pid 156102] [client 10.100.43.146:54916] AH02008: SSL library error 1 in handshake (server 2001:4860::e:2b91:25443)
+[Sun May 22 20:09:27.176824 2022] [ssl:info] [pid 156102] SSL Library Error: error:1408F10B:SSL routines:SSL3_GET_RECORD:wrong version number
+
+2.
+/opt/panda/etc/panda/panda_server-httpd.conf:
+WSGISocketPrefix /var/log/panda/wsgisocks/wsgi
+
+/opt/panda/etc/rc.d/init.d/panda_httpd:
+/var/log/panda/panda_server_httpd.pid
+
+3. auto generate certs
+if [ -f /opt/panda/etc/cert/hostcert.pem ]; then
+    echo "host certificate is already created."
+else
+    mkdir -p /opt/panda/etc/cert; \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+       -subj "/C=US/DC=IDDS/OU=computers/CN=$(hostname -f)" \
+       -keyout /opt/panda/etc/cert/hostkey.pem \
+       -out /opt/panda/etc/cert/hostcert.pem
+fi
+
+4. panda-database
+if db username is not postgres, it will crash. pga_ha.conf doesn't have other username such as admin
+
+5. panda client return the loadbalancer's hostname, not the hostname I used. option to disable it
+client.randomize_ip
+
+6.
+unset X509_USER_PROXY
+unset X509_CERT_DIR

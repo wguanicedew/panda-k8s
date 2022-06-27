@@ -1,0 +1,11 @@
+bash prepare-docker.sh --from-release --artemis-version 2.23.1
+
+ docker build -f ./docker/Dockerfile-centos -t artemis-centos .
+
+docker build --build-arg TAG=2.23.1 -f ./docker/Dockerfile-centos --network host --no-cache --tag wguanicedew/activemq-artemis:2.23.1 .
+
+docker run -it  wguanicedew/activemq-artemis:2.23.1 bash
+
+docker images
+# docker login --username=wguanicedew
+# docker push wguanicedew/idds:0.10.17
