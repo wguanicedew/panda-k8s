@@ -1,0 +1,44 @@
+executable = /opt/harvester/sandbox/sphenix.runpilot2-wrapper.sh
+arguments = "-s SLAC_TEST -r SLAC_TEST -q SLAC_TEST -j managed -i PR -w generic --pilot-user rubin --url https://pandaserver-doma.cern.ch -d --harvester-submit-mode PUSH  --queuedata-url http://pandaserver-doma.cern.ch:25080/cache/schedconfig/SLAC_TEST.all.json --storagedata-url https://datalake-cric.cern.ch/api/atlas/ddmendpoint/query/?json --pilotversion 3  --pythonversion 3 --localpy"
+
+initialdir = /data/test
+universe = grid
+log = /data/test/grid.$(Cluster).$(Process).log
+output = /data/test/grid.$(Cluster).$(Process).out
+error = /data/test/grid.$(Cluster).$(Process).err
+transfer_executable = True
+x509userproxy = /data/test/x509up_u25606
+environment = "PANDA_JSID=harvester-DOMA_Harvester HARVESTER_ID=DOMA_Harvester HARVESTER_WORKER_ID=11227439 APFMON=http://apfmon.lancs.ac.uk/api APFFID=DOMA_Harvester APFCID=$(Cluster).$(Process)"
++harvesterID = "DOMA_Harvester"
++harvesterWorkerID = "11227439"
+should_transfer_files = True
+transfer_input_files = pandaJobData.out
+
+grid_resource = arc1 https://arcce1.slac.stanford.edu:9443/arex/rest/1.0
+nordugrid_rsl = (queue = rubin)(runtimeenvironment = APPS/HEP/ATLAS-SITE-LCG)(runtimeenvironment = ENV/PROXY)(jobname = arc_pilot)(count = 1)(countpernode = 1)(memory = 1843)(walltime = 0)(cputime = 0)(environment = (PANDA_JSID harvester-DOMA_Harvester)(HARVESTER_ID DOMA_Harvester)(HARVESTER_WORKER_ID 11227439)(GTAG https://ai-idds-02.cern.ch/condor_logs/22-06-16_04/grid.$(Cluster).$(Process).out)(APFMON http://apfmon.lancs.ac.uk/api)(APFFID DOMA_Harvester)(APFCID $(Cluster).$(Process)))
+
+
+arc_resources = <SlotRequirement>  \ 
+                <NumberOfSlots>1</NumberOfSlots> \
+                    <SlotsPerHost>1</SlotsPerHost> \
+                </SlotRequirement> \
+                <QueueName>rubin</QueueName> \
+                <IndividualPhysicalMemory>1932525568</IndividualPhysicalMemory>
+
+
+
++remote_jobuniverse = 5
++remote_requirements = True
++remote_ShouldTransferFiles = "YES"
++remote_WhenToTransferOutput = "ON_EXIT"
++remote_TransferOutput = ""
+
++ioIntensity = 0
+
+periodic_remove = (JobStatus == 2 && (CurrentTime - EnteredCurrentStatus) > 129600)
++remote_PeriodicRemove = (JobStatus == 5 && (CurrentTime - EnteredCurrentStatus) > 3600) || (JobStatus == 1 && globusstatus =!= 1 && (CurrentTime - EnteredCurrentStatus) > 86400)
+
++sdfPath = "/data/test/test_submit.sdf"
+
+queue 1
+

@@ -27,7 +27,7 @@ set -e
 ACTIVEMQ_SERVICE=$1
 
 BROKER_HOME=/var/lib/
-CONFIG_PATH=$BROKER_HOME/artemis-instance/etc
+CONFIG_PATH=$BROKER_HOME/etc
 export BROKER_HOME OVERRIDE_PATH CONFIG_PATH
 
 if [[ ${ANONYMOUS_LOGIN,,} == "true" ]]; then
@@ -42,20 +42,11 @@ echo CREATE_ARGUMENTS=${CREATE_ARGUMENTS}
 
 if ! [ -f ./etc/broker.xml ]; then
     /opt/activemq-artemis/bin/artemis create ${CREATE_ARGUMENTS} .
-    mv ${CONFIG_PATH}/bootstrap.xml ${CONFIG_PATH}/bootstrap.xml.orig
-    mv ${CONFIG_PATH}/broker.xml ${CONFIG_PATH}/broker.xml.orig
-    mv ${CONFIG_PATH}/login.config ${CONFIG_PATH}/login.config.orig
-    cp /opt/activemq-artemis/docker/conf/bootstrap.xml ${CONFIG_PATH}/bootstrap.xml
-    cp /opt/activemq-artemis/docker/conf/broker.xml ${CONFIG_PATH}/broker.xml
-    cp /opt/activemq-artemis/docker/conf/login.config ${CONFIG_PATH}/login.config
-
 else
     echo "broker already created, ignoring creation"
 fi
 
-echo "ACTIVEMQ_SERVICE: ${ACTIVEMQ_SERVICE}"
-if [ "${ACTIVEMQ_SERVICE}" == "run" ]; then
-    exec ./bin/artemis "$@"
-else
+if [ "${ACTIVEMQ_SERVICE}" == "bash" ]; then
     exec "$@"
-fi
+else
+    exec ./bin/artemis "$@"

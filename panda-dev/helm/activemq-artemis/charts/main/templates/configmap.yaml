@@ -1,0 +1,36 @@
+# JEDI and server configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "main.fullname" . }}-configmap
+data:
+  ARTEMIS_NAME: {{ include "main.fullname" . }}
+  ARTEMIS_USER: {{ .Values.admin.name }}
+  ARTEMIS_PASSWORD: {{ .Values.admin.password }}
+
+{{- if .Values.hostcerts.enabled -}}
+---
+# host cert and key
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "main.fullname" . }}-certs
+data:
+    hostcert.pem: |-
+{{ .Files.Get "hostcert.pem" | indent 8}}
+
+    hostkey.pem: |-
+{{ .Files.Get "hostkey.pem" | indent 8}}
+{{- end }}
+
+---
+# sandbox
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "main.fullname" . }}-sandbox
+binaryData:
+  {{- range $path, $_ := .Files.Glob "sandbox/*" }}
+  {{ base $path }}: |-
+    {{ $.Files.Get $path | b64enc }}
+  {{- end }}

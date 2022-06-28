@@ -8,14 +8,16 @@ main:
   enabled: true
   replicaCount: 1
   image:
-    repository: webcenter/activemq
+    # repository: webcenter/activemq
     pullPolicy: "IfNotPresent"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "5.14.3"
+    # tag: "5.14.3"
+    repository: wguanicedew/activemq-artemis
+    tag: "0.0.2"
   autoStart: true
 
   persistentvolume:
-    enabled: false
+    enabled: true
     # false for SLAC
     path: "/var/lib/artemis-instance"
     size: 5Gi
@@ -29,25 +31,19 @@ main:
   auth:
     enabled: false
 
-  topics: "iddspanda;pandaidds"
-  queues: "iddspanda;pandaidds"
-
   admin:
     name: admin
     password: MyActiveMQPass0508
-  user:
-    name: idds
-    password: MyPass0508
-  owner:
-    name: iddsowner
-    password: MyPass0508
-  read:
-    name: iddsread
-    password: MyPass0508
-  write:
-    name: iddswrite
-    password: MyPass0508
-
+  users:
+    - name: panda
+      password: panda_pass
+      role: panda
+    - name: idds
+      password: idds_pass
+      role: idds
+    - name: pilot
+      password: pilot_pass
+      role: pilot
 
   service:
     type: ClusterIP
