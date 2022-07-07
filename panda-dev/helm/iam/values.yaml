@@ -1,0 +1,75 @@
+# Default values for iam.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+database:
+  name: &db_name iamdb
+  user: &db_user iam
+  password: &db_password MyPandaPass0508
+  admin_password: &db_admin_password MyAdminPass0508
+
+organization: &organization Rubin
+
+main:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: indigoiam/iam-login-service
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    # tag: "latest"
+    tag: "v1.6.0"
+
+  iam:
+    # profiles: "prod,google,saml"
+    profiles: "prod,registration,oidc"
+    # profiles: "prod"
+    organization: *organization
+
+  persistentvolume:
+    path: "/mnt/iam-iam-logs"
+    size: 5Gi
+  hostcerts:
+    enabled: false
+  database:
+    name: *db_name
+    user: *db_user
+    password: *db_password
+  ingress:
+    enabled: true
+    hosts:
+      - domain: cern.ch
+        hostOverride: panda-iam-dev.cern.ch
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: ""
+        hosts:
+          - domain: cern.ch
+            hostOverride: panda-iam-dev.cern.ch
+
+mariadb:
+  # nameOverride: {{ .Release.Name }}-postgres
+  # fullnameOverride: {{ .Release.Name }}-postgres
+  enabled: true
+  persistentvolume:
+    path: "/mnt/iam-database"
+    size: 5Gi
+  image:
+    repository: bitnami/mariadb
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  iam:
+    organization: *organization
+
+  database:
+    name: *db_name
+    user: *db_user
+    password: *db_password
+    admin_password: *db_admin_password
+  service:
+    type: ClusterIP
+    port: 3306

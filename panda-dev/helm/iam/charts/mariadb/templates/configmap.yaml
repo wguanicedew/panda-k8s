@@ -1,0 +1,24 @@
+# config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mariadb.fullname" . }}-configmap
+  labels:
+    {{- include "mariadb.labels" . | nindent 4 }}
+data:
+  MARIADB_DATABASE: {{ .Values.database.name }}
+  MARIADB_USER: {{ .Values.database.user }}
+  MARIADB_PASSWORD: {{ .Values.database.password }}
+  MARIADB_ROOT_PASSWORD: {{ .Values.database.admin_password }}
+
+---
+# init db
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mariadb.fullname" . }}-initdb
+data:
+  init_org_db.sql: |-
+    CREATE DATABASE iam_{{ .Values.iam.organization }}_db CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+    GRANT ALL PRIVILEGES on iam_{{ .Values.iam.organization }}_db.* to '{{ .Values.database.user }}'@'%' identified by '{{ .Values.database.password }}';
+
