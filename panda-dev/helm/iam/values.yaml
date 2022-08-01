@@ -26,6 +26,8 @@ main:
     profiles: "prod,registration,oidc"
     # profiles: "prod"
     organization: *organization
+    cilogon_client_id: "cilogon:/client_id/cafea33696da735282ac7900140ecaa"
+    cilogon_client_secret: "5Yfqr9xlpHpG2ybm5LxnkLZZ4LLQNJVromid5b1T1Sdfn0nR_gz1wzA6WAPPVp2JjzMludwSwSBTbhnzTCsFyg"
 
   persistentvolume:
     path: "/mnt/iam-iam-logs"

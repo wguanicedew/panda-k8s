@@ -1,0 +1,9 @@
+name: harvester-dev-secret
+
+database:
+  # harvester password
+  password: FIXME
+  # admin password
+  admin_password: FIXME
+  # external database hostname
+  dbhost: "harvester-dev-mariadb"

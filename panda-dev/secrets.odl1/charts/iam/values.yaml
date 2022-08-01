@@ -1,0 +1,12 @@
+name: iam-dev-secret
+
+database:
+  name: "iam_db"
+  user: "iam"
+  password: "MyPass0508"
+  admin_password: "MyAdminPass0508"
+  host: "iam-dev-mariadb"
+
+cilogon:
+  client_id: "FIXME"
+  client_secret: "FIXME"

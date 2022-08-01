@@ -1,0 +1,18 @@
+secret:
+  name: idds-dev-secret
+
+database:
+  name: "idds_db"
+  user: "idds"
+  password: "MyPass0508"
+  schema: "doma_idds"
+  host: "idds-dev-postgres"
+
+
+conductor:
+  brokers: 
+    - activemq-dev
+  port: 61613
+  destination: /queue/iddspanda
+  username: idds
+  password: ITzqWRCd_idds

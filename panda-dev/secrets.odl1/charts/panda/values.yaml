@@ -1,0 +1,6 @@
+name: panda-dev-secret
+
+database:
+  password: FIXME
+  dbhost: "panda-dev-postgres"
+

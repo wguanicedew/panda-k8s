@@ -1,0 +1,162 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2022-07-13T08:11:02Z"
+  generateName: ingress-traefik-
+  labels:
+    controller-revision-hash: 5fd699f5db
+    k8s-app: ingress-traefik-backend
+    name: ingress-traefik-backend
+    pod-template-generation: "1"
+  name: ingress-traefik-dzr9m
+  namespace: kube-system
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DaemonSet
+    name: ingress-traefik
+    uid: 62bd3c37-70e6-4e69-b860-11d67b878460
+  resourceVersion: "108222"
+  selfLink: /api/v1/namespaces/kube-system/pods/ingress-traefik-dzr9m
+  uid: 8acc1b81-614d-47e0-9a8b-4e30eb98ec63
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchFields:
+          - key: metadata.name
+            operator: In
+            values:
+            - idds-k8s-traefik-wcxi4kdpjf2s-node-0
+  containers:
+  - image: registry.cern.ch/magnum/traefik:v1.7.28
+    imagePullPolicy: IfNotPresent
+    name: ingress-traefik-backend
+    ports:
+    - containerPort: 80
+      hostPort: 80
+      name: http
+      protocol: TCP
+    - containerPort: 443
+      hostPort: 443
+      name: https
+      protocol: TCP
+    - containerPort: 8080
+      hostPort: 8080
+      name: admin
+      protocol: TCP
+    resources: {}
+    securityContext:
+      capabilities:
+        add:
+        - NET_BIND_SERVICE
+        drop:
+        - ALL
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /etc/traefik/traefik.toml
+      name: ingress-traefik
+      subPath: traefik.toml
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-wvp5d
+      readOnly: true
+  dnsPolicy: ClusterFirstWithHostNet
+  enableServiceLinks: true
+  hostNetwork: true
+  nodeName: idds-k8s-traefik-wcxi4kdpjf2s-node-0
+  nodeSelector:
+    role: ingress
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: ingress-traefik
+  serviceAccountName: ingress-traefik
+  terminationGracePeriodSeconds: 60
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/disk-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/pid-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/unschedulable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/network-unavailable
+    operator: Exists
+  volumes:
+  - configMap:
+      defaultMode: 420
+      name: ingress-traefik
+    name: ingress-traefik
+  - name: kube-api-access-wvp5d
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-13T08:11:02Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-13T08:11:06Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-13T08:11:06Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-13T08:11:02Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://209a3fa16e847b2811e48d7d22d6040c47200c3654851a5a3b9256b05749b4e3
+    image: registry.cern.ch/magnum/traefik:v1.7.28
+    imageID: registry.cern.ch/magnum/traefik@sha256:af9ee4f13d77fdc35fd8c2d571b042001080754a5e69efca671bf3b382e29163
+    lastState: {}
+    name: ingress-traefik-backend
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2022-07-13T08:11:05Z"
+  hostIP: 188.184.72.210
+  phase: Running
+  podIP: 188.184.72.210
+  podIPs:
+  - ip: 188.184.72.210
+  - ip: 2001:1458:d00:4e::100:155
+  qosClass: BestEffort
+  startTime: "2022-07-13T08:11:02Z"

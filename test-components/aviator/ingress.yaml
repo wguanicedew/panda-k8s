@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-traefik
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+spec:
+  tls:
+  - hosts:
+      -  myaviator1.cern.ch
+  #  secretName: mycluster-tls-cert
+  rules:
+  - host: myaviator1.cern.ch
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: aviator
+            port:
+              number: 8080
