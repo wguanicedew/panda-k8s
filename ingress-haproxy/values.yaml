@@ -1,0 +1,22 @@
+
+
+kubernetes-ingress:
+  controller:
+    kind: Deployment
+    replicaCount: 1
+
+    nodeSelector:
+      haproxy-role: haproxy
+
+    service:
+      type: LoadBalancer
+
+      nodePorts:
+        http: ""
+        https: ""
+        stat: ""
+
+  defaultBackend:
+    enabled: false
+
+

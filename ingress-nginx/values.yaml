@@ -1,0 +1,32 @@
+# Default values for ingress-nginx.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+ingress-nginx:
+  controller:
+    #image:
+      # repository: wguanicedew/ingress-nginx-controller
+      # tag: "v.1.3.0"
+      # digest: sha256:219823ee350b71e09f3b46664a4aec3eb3af05410c61f6e9317c37cdb8b38e41
+
+      # repository: ghcr.io/wguanicedew/ingress-nginx-controller
+      # tag: "v.1.3.0"
+      # digest: sha256:675fab95a2037d6f38a83d027eaaf1723149732445f973c74976177c8aa04072
+
+    hostPort:
+      enabled: true
+    nodeSelector:
+      ingress-role: nginx
+
+    ingressClassResource:
+      enabled: false
+      # name: myingress
+      # controllerValue: "k8s.io/ingress-mynginx"
+
+    extraArgs:
+      v: "5"
+      enable-ssl-passthrough: ""
+
+  tcp:
+    61613: "default/msgsvc-activemq:61613"
+

@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: idds-dev-rest
+  labels:
+    helm.sh/chart: rest-0.1.0
+    app.kubernetes.io/name: rest
+    app.kubernetes.io/instance: idds-dev
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kubernetes.io/ingress.class: haproxy
+spec:
+  tls:
+    - hosts:
+        - "idds-dev-rest1.cern.ch"
+      secretName: idds-dev-main-tls-cert
+  rules:
+    - host: "idds-dev-rest1.cern.ch"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: idds-dev-rest
+                port:
+                  number: 8443
