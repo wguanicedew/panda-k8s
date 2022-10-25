@@ -1,0 +1,27 @@
+# msgsvc
+{{- if .Values.msgsvc.ingress.enabled -}}
+{{- $fullName := include "panda-ingress.fullname" . }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: {{ $fullName }}-msgsvc
+  annotations:
+    helm.sh/hook: "post-install,post-upgrade"
+  labels:
+    {{- include "panda-ingress.labels" . | nindent 4 }}
+    app.kubernetes.io/name: traefik-msgsvc
+spec:
+  entryPoints:
+    {{- range .Values.msgsvc.entrypoints }}
+    - {{.name}}
+    {{- end}}
+  routes:
+  - match: {{ .Values.msgsvc.rule }}
+    # match: HostSNI(`*`)
+    services:
+      {{- range .Values.msgsvc.services }}
+      - name: {{ .service}}
+        port: {{ .port}}
+      {{- end }}
+MANIFEST:
+{{- end }}

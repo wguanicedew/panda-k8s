@@ -1,0 +1,36 @@
+# idds
+{{- if .Values.idds.ingress.enabled -}}
+{{- $fullName := include "panda-ingress.fullname" . }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}-idds
+  annotations:
+    helm.sh/hook: "post-install,post-upgrade"
+  labels:
+    {{- include "panda-ingress.labels" . | nindent 4 }}
+    app.kubernetes.io/name: traefik-idds
+spec:
+  entryPoints:
+    {{- range .Values.idds.entrypoints }}
+    - {{.name}}
+    {{- end}}
+  routes:
+  - match: {{ .Values.idds.rule }}
+    kind: Rule
+    services:
+      {{- range .Values.idds.services }}
+      - name: {{ .service}}
+        port: {{ .port }}
+        {{- if .kind }}
+        kind: {{ .kind }}
+        {{- else }}
+        kind: Service
+        {{- end}}
+      {{- end }}
+  tls:
+    options: 
+      name: mytlsoption
+      namespace: default
+MANIFEST:
+{{- end }}
