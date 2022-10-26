@@ -1,0 +1,31 @@
+# iam
+{{- if .Values.iam.ingress.enabled -}}
+{{- $fullName := include "panda-ingress.fullname" . }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}-iam
+  annotations:
+    helm.sh/hook: "post-install,post-upgrade"
+  labels:
+    {{- include "panda-ingress.labels" . | nindent 4 }}
+    app.kubernetes.io/name: traefik-iam
+spec:
+  entryPoints:
+    {{- range .Values.iam.entrypoints }}
+    - {{.name}}
+    {{- end}}
+  routes:
+  - match: HostSNI(`cern.ch`)
+    kind: Rule
+    services:
+      {{- range .Values.iam.services }}
+      - name: {{ .service}}
+        {{- if .kind }}
+        kind: {{ .kind }}
+        {{- else }}
+        kind: Service
+        {{- end}}
+      {{- end }}
+MANIFEST:
+{{- end }}

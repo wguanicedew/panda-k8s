@@ -1,0 +1,21 @@
+# Default values for ingress-nginx.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+ingress-nginx:
+  controller:
+    hostPort:
+      enabled: true
+    nodeSelector:
+      ingress-role: nginx
+
+    ingressClassResource:
+      enabled: false
+
+    extraArgs:
+      v: "5"
+      enable-ssl-passthrough: ""
+
+  tcp:
+    61613: "default/msgsvc-activemq:61613"
+

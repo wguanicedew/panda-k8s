@@ -1,0 +1,49 @@
+# panda ingress based on traefik
+#
+
+msgsvc:
+  ingress:
+    enabled: false
+  entrypoints:
+    - name: msgsvc
+  rule: HostSNI(`*`)
+  services:
+    - service: msgsvc-dev-activemq
+      port: 61613
+
+idds:
+  ingress:
+    enabled: true
+  entrypoints:
+    - name: idds
+  rule: Host(`cern.ch`) && PathPrefix(`/idds`)
+  services:
+    - service: idds-dev-rest
+      port: 8443
+
+panda:
+  ingress:
+    enabled: false
+  entrypoints:
+    - name: panda
+  rule: HostSNI(`cern.ch`)
+  services:
+    - service: panda-dev-server
+
+iam:
+  ingress:
+    enabled: false
+  entrypoints:
+    - name: iam
+  rule: HostSNI(`cern.ch`)
+  services:
+    - service: iam-dev-main
+
+bigmon:
+  ingress:
+    enabled: false
+  entrypoints:
+    - name: bigmon
+  rule: HostSNI(`cern.ch`)
+  services:
+    - service: bigmon-dev-main
