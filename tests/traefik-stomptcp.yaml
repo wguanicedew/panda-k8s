@@ -1,0 +1,24 @@
+# Source: ingress/charts/traefik/templates/dashboard-hook-ingressroute.yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: ingress-dev-traefik-stomp
+  annotations:
+    helm.sh/hook: "post-install,post-upgrade"
+  labels:
+    app.kubernetes.io/name: traefik
+    helm.sh/chart: traefik-10.24.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ingress-dev
+spec:
+  entryPoints:
+    - stomp
+  routes:
+  - match: HostSNI(`cern.ch`)
+    # kind: Rule
+    services:
+    - name: activemq-dev
+      port: 61613
+      # kind: Service
+MANIFEST:
+

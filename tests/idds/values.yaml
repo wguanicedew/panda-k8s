@@ -1,0 +1,32 @@
+# Default values for idds.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+daemon:
+  enabled: false
+  image:
+    tag: "0.11.9"
+
+rest:
+  enabled: true
+  image:
+    tag: "0.11.9"
+
+  podSecurityContext:
+    fsGroup: 1000
+  # securityContext:
+  #   fsGroup: 48
+
+
+postgres:
+  enabled: false
+  image:
+    tag: "13.6"
+
+  database:
+    name: "idds_db"
+    user: "idds"
+    password: "MyPass123"
+    schema: "doma_idds"
+    host: ""
