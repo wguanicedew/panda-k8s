@@ -1,0 +1,13 @@
+
+kubectl delete clusterrole mariadb-manager-role
+kubectl delete ClusterRoleBinding mariadb-manager-rolebinding
+kubectl delete ValidatingWebhookConfiguration mariadb-operator-webhook
+
+helm install -n test mariadb-operator mariadb-operator/mariadb-operator
+
+kubectl apply -n test -f configmap.yaml
+kubectl apply -n test -f mariadb.yaml
+kubectl apply -n test -f database.yaml
+kubectl apply -n test -f user.yaml  
+kubectl apply -n test -f grant.yaml
+
