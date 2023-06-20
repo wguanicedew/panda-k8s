@@ -4,7 +4,7 @@ filename=${MARIADB_DATABASE}_${HOSTNAME}_$(date "+%Y.%m.%d-%H.%M.%S")
 # dump the db
 mysqldump -u root -p${MARIADB_ROOT_PASSWORD} --databases ${MARIADB_DATABASE} > /tmp/${filename}
 
-echo $MARIADB_BACKUP_RSA > /tmp/backup_id_rsa
+cp /opt/conf/id_rsa > /tmp/backup_id_rsa
 chmod 600 /tmp/backup_id_rsa
 
 # scp
