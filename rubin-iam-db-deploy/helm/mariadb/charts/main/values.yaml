@@ -12,6 +12,9 @@ database:
   name: "test-db"
   user: "test"
 
+backup:
+  path: "/tmp/"
+
 persistentvolume:
   class: manual
   size: 5Gi

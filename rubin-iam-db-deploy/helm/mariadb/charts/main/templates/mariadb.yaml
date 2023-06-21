@@ -11,6 +11,8 @@ data:
   UMASK: "0660"
   UMASK_DIR: "0750"
 
+  BACKUP_PATH: {{ .Values.backup.path }}
+
 ---
 apiVersion: mariadb.mmontes.io/v1alpha1
 kind: MariaDB
@@ -56,9 +58,14 @@ spec:
   volumes: 
     - name: tmp
       emptyDir: {}
+    - name: {{ include "mariadb.fullname" . }}-id-rsa
+      secret:
+        secretName: {{ .Values.global.secret }}-{{ .Values.global.sub_secret_name }}-id-rsa
   volumeMounts: 
     - name: tmp
       mountPath: /tmp
+    - name: {{ include "mariadb.fullname" . }}-id-rsa
+      mountPath: /opt/conf/
 
   myCnf: |
     [mysqld]

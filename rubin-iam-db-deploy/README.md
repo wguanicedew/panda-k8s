@@ -15,6 +15,8 @@ kubectl delete ClusterRoleBinding mariadb-manager-rolebinding
 kubectl delete ValidatingWebhookConfiguration mariadb-operator-webhook
 ```
 
+ helm install --dry-run -n test iam-db-test helm/mariadb/ -f helm/mariadb/values.yaml  -f helm/mariadb/values/values-lsst.yaml 
+
 ## install the mariadb
 
 ```bash
