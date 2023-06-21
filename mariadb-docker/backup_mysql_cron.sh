@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+source /tmp/container_env.sh
+
 if [ -z "${BACKUP_PATH}" ]; then
     echo "BACKUP_PATH is not set, no backup"
 else
